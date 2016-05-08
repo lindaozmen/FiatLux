@@ -1,0 +1,2 @@
+Erreur : lecture de reflecteur (id: 0): point trop proche
+E04.txt

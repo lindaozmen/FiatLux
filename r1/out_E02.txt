@@ -1,0 +1,2 @@
+Erreur : lecture de absorbeur : trop ou erreur de syntaxe
+E02.txt

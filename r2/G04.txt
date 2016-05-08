@@ -1,0 +1,21 @@
+# Fiat Lux! 2015-16
+#
+# G01: init dessin
+#
+
+4
+0.15 -0.1 1.5707
+0.06 -0.1 1.5707
+-0.04 -0.1 1.5707
+-0.12 -0.1 1.5707
+FIN_LISTE
+
+0
+FIN_LISTE
+
+0
+FIN_LISTE
+
+0
+
+FIN_LISTE

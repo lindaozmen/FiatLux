@@ -1,0 +1,2 @@
+Erreur : lecture de absorbeur (id: 2): point trop proche
+E05.txt

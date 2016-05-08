@@ -1,0 +1,2 @@
+Erreur : lecture de reflecteur : pas assez ou erreur de syntaxe
+E06.txt
