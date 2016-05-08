@@ -129,7 +129,7 @@ int absorbeur_dectection_collision(SEGMENT s)
 		}
 	}
 	return 0;
-}
+}//
 
 void absorbeur_print_file(FILE* file)
 {
