@@ -81,6 +81,30 @@ int projecteur_get_nombre()
 	return nb_expected_pr;
 }
 
+int projecteur_dectection_collision(SEGMENT s)
+{
+	double longueur, angle;
+	VECTEUR v1, v2;
+	SEGMENT s_pr;
+	
+	int i;
+	for(i = 0; i < nb_expected_pr; i++)
+	{
+		longueur = NBPH*EPSIL_PROJ;
+		angle = (tab_pr+i)->alpha;
+
+		v1 = (tab_pr + i)->position;
+		v2.x = ((tab_pr+i)->position).x-longueur*sin(angle);
+		v2.y = ((tab_pr+i)->position).y+longueur*cos(angle);				
+		s_pr.deb = v1;
+		s_pr.fin = v2;
+		if(detection_intersection(s, s_pr) == 0)
+			return 1;
+	}
+
+	return 0;
+}
+
 void projecteur_print_file(FILE* file)
 {
 	fprintf(file, "#projecteur\n");

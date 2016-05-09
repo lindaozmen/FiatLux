@@ -73,6 +73,15 @@ VECTEUR calculer_sens_inverse(VECTEUR v)
 	return v_inverse;
 }
 
+VECTEUR vecteur_multiplication_scalaire(VECTEUR vect, double scalaire)
+{
+	VECTEUR v_final;
+	v_final.x = vect.x*scalaire;
+	v_final.y = vect.y*scalaire;
+	
+	return v_final;
+}
+
 double produit_vectoriel(VECTEUR v1, VECTEUR v2)
 {	
 	double pv = v1.x*v2.y - v1.y*v2.x;
@@ -177,6 +186,15 @@ int detection_intersection(SEGMENT s1, SEGMENT s2)
 	return 1;
 }
 	
+VECTEUR trajectoire_reflechie(VECTEUR position, double alpha)
+{
+	VECTEUR t = calculer_vecteur_unitaire(position);
+	VECTEUR n = vecteur_multiplication_scalaire(t, cos(alpha));
+	VECTEUR s = vecteur_multiplication_scalaire(n, 2*produit_scalaire(t,n));
+	VECTEUR w = vecteur_difference(t,s);
+	
+	return w;
+}
 	
 
 VECTEUR new_vecteur(double x, double y)

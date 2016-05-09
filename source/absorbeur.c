@@ -129,7 +129,34 @@ int absorbeur_dectection_collision(SEGMENT s)
 		}
 	}
 	return 0;
-}//
+}
+
+int absorbeur_plus_proche_selection(int x, int y)
+{
+	VECTEUR point = {x, y};
+	VECTEUR moyen = {((tab_a->elements)->x + (tab_a->elements)->x)/2, 
+						((tab_a->elements)->y + (tab_a->elements)->y)/2};
+	double min_distance = calculate_distance(point, moyen);
+	double min_temporaire = 0;
+	int min_i = 0;
+	int i, j;
+	for(i = 0; i < nb_expected_a; i++)
+	{
+		for(j = 0; j < tab_a[i].nbp-1; j++)
+		{	
+			moyen.x = (((tab_a+i)->elements+j)->x + ((tab_a+i)->elements+j+1)->x)/2;
+			moyen.y = (((tab_a+i)->elements+j)->y + ((tab_a+i)->elements+j+1)->y)/2;
+						
+			min_temporaire = calculate_distance(point, moyen);
+			if(min_temporaire < min_distance)
+			{
+				min_distance = min_temporaire;
+				min_i = i;
+			}
+		}
+	}
+	return min_i;
+}
 
 void absorbeur_print_file(FILE* file)
 {

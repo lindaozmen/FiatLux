@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -g
+CFLAGS = -g -Wpedantic
 LIBS   = -lstdc++ -lglut -lGL -lGLU -lm -L/usr/X11R6/lib -lX11 -lXext -lXmu -lXi -lglui -lm
 CFILES = error.c utilitaire.c graphic.c projecteur.c reflecteur.c photon.c \
  absorbeur.c modele.c rendu2.cpp
@@ -95,6 +95,21 @@ modele.o: modele.c modele.h constantes.h tolerance.h error.h reflecteur.h \
  utilitaire.h projecteur.h absorbeur.h photon.h
 rendu2.o: rendu2.cpp modele.h constantes.h tolerance.h error.h \
  reflecteur.h utilitaire.h projecteur.h absorbeur.h photon.h
+error.o: error.c error.h
+utilitaire.o: utilitaire.c utilitaire.h constantes.h tolerance.h
+graphic.o: graphic.c graphic.h
+projecteur.o: projecteur.c projecteur.h constantes.h tolerance.h error.h \
+ utilitaire.h graphic.h
+reflecteur.o: reflecteur.c reflecteur.h constantes.h tolerance.h error.h \
+ utilitaire.h graphic.h
+photon.o: photon.c photon.h constantes.h tolerance.h error.h utilitaire.h \
+ graphic.h
+absorbeur.o: absorbeur.c absorbeur.h constantes.h tolerance.h error.h \
+ utilitaire.h graphic.h
+modele.o: modele.c modele.h constantes.h tolerance.h error.h utilitaire.h \
+ reflecteur.h projecteur.h absorbeur.h photon.h
+rendu2.o: rendu2.cpp modele.h constantes.h tolerance.h error.h \
+ utilitaire.h reflecteur.h projecteur.h absorbeur.h photon.h graphic.h
 error.o: error.c error.h
 utilitaire.o: utilitaire.c utilitaire.h constantes.h tolerance.h
 graphic.o: graphic.c graphic.h

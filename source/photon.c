@@ -80,7 +80,8 @@ void photon_free()
 	nb_expected_ph = 0;
 }
 
-
+//extern VECTEUR trajectoire_reflechie(VECTEUR position, double alpha);
+//#include "utilitaire.c"
 //method pour accéder aux éléments
 int photon_get_nb()	
 {
@@ -103,6 +104,14 @@ void photon_update()
 			photon_retirer(up_tete->id);
 			up_tete = NULL;
 		}
+		
+		VECTEUR w;
+		if(reflecteur_dectection_collision(s))
+		{
+			w = trajectoire_reflechie((up_tete->ph).position, (up_tete->ph).alpha);
+			(up_tete->ph).position = w;
+		}
+		
 		up_tete = suivant;
 		/*
 		(up_tete->ph).position.x += VPHOT*DELTA_T*cos((up_tete->ph).alpha);

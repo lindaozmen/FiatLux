@@ -166,6 +166,26 @@ void motion_cb(int x, int y)
 	glutPostRedisplay();
 }
 
+void keyboard_cb(unsigned char key, int x, int y)
+{
+	switch(key)
+	{
+		case 'r':
+		{
+			break;
+		}
+		case 'd':
+		{
+			break;
+		}
+		case 'k':
+		{
+			break;
+		}
+	}
+	glutPostRedisplay();		
+}
+
 void control_cb(int id)
 {
 	switch(id)
@@ -253,6 +273,7 @@ void start_graphic(int* argc, char ** argv)
 	glutReshapeFunc(reshape_cb);	
 	glutMouseFunc(mouse_cb);
 	glutMotionFunc(motion_cb);
+	glutKeyboardFunc(keyboard_cb);
 	glutIdleFunc(idle_cb);
 	
 	glui=GLUI_Master.create_glui("Fiat Lux !",0,600,100);

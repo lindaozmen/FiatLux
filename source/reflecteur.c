@@ -84,6 +84,19 @@ int reflecteur_get_nombre()
 	return nb_expected_r;
 }
 
+int reflecteur_dectection_collision(SEGMENT s)
+{
+	int i;
+	for(i = 0; i < nb_expected_r; i++)
+	{
+		SEGMENT s_r = {(tab_r + i)->deb, (tab_r + i)->fin};
+		if(detection_intersection(s, s_r) == 0)
+			return 1;
+	}
+	
+	return 0;
+}
+
 void reflecteur_print_file(FILE* file)
 {
 	fprintf(file, "#reflecteur\n");

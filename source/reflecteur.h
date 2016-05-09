@@ -12,6 +12,7 @@ int verifier_fin_reflecteur();
 int reflecteur_load(char * tab);
 void reflecteur_free();
 int reflecteur_get_nombre();
+int reflecteur_dectection_collision(SEGMENT s);
 void projecteur_print_file(FILE* file);
 int reflecteur_add_r(REFLECTEUR r);
 SEGMENT reflecteur_get_segment(int id);
