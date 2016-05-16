@@ -21,7 +21,7 @@ namespace
 	VECTEUR dessin_start, dessin_end;		//pour zoom
 	double xmin = -DMAX, xmax = DMAX, ymin = -DMAX, ymax = DMAX;
 	int bouton_start = 0;
-	int selecting = 0;
+	int selecting = 0;	//pour pouvoir dessiner quand mouse bouge
 
 	//Fenetre glui
 	GLUI *glui;
@@ -98,8 +98,15 @@ void mouse_cb(int button, int state, int x, int y)
 			if (radio1->get_int_val() == 0)
 			{
 				modele_element_plus_proche(coordonnees);
+				selecting = 1;
 			}
-			selecting = 1;
+			else if (radio1->get_int_val() == 1)
+			{
+				VECTEUR v = glut_to_opengl_coordonnees(x, y);
+				modele_creation(v);
+			}
+			
+			
 		}
 		
    	}

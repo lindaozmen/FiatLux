@@ -192,10 +192,15 @@ int absorbeur_add_a(ABSORBEUR a)
 	return 0;
 }
 
-void absorbeur_creation()
+void absorbeur_creation(ABSORBEUR* a, int nb_point)
 {
+	ABSORBEUR abs;
+	abs.nbp = nb_point;
+	abs.elements = (a->elements);
 	
+	absorbeur_add_a(abs);
 }
+
 void absorbeur_retirer(int id)
 {
 	ABSORBEUR* temp = malloc((nb_element_a-1)*sizeof(ABSORBEUR));

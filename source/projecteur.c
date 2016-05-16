@@ -207,6 +207,8 @@ void projecteur_creation(VECTEUR deb, VECTEUR fin)
 	VECTEUR v = vecteur_difference(deb, fin);
 	pr.alpha = atan2(v.y, v.x);
 	
+	printf("projecteur creation\n");
+	printf("%f %f %f\n", pr.position.x, pr.position.y, pr.alpha);
 	projecteur_add_pr(pr);
 }
 

@@ -14,6 +14,7 @@ void absorbeur_free();
 int absorbeur_dectection_collision(SEGMENT s);
 int absorbeur_plus_proche_selection(VECTEUR vect_coordonne);
 int absorbeur_add_a(ABSORBEUR a);
+void absorbeur_creation(ABSORBEUR* a, int nb_point);
 int absorbeur_nombre_vecteur(int id);
 void absorbeur_retirer(int id);
 int absorbeur_get_nombre();

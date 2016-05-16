@@ -4,8 +4,10 @@
 #include <stdio.h>
 
 int id_select = -1;
+int nb_element_creation = 0;
 int lastMode = -1;
 int lastChoix = -1;
+VECTEUR v_tab[MAX_PT];
 
 int modele_lecture(char * nomfichier, int mode_verification)
 {
@@ -248,6 +250,32 @@ void modele_effacer_element()
 			projecteur_retirer(id_select);
 		}
 		id_select = -1;
+	}
+}
+
+void modele_creation(VECTEUR v)
+{
+	printf("%f %f\n", v.x, v.y);
+	v_tab[nb_element_creation] = v;
+	nb_element_creation ++;
+	
+	if (nb_element_creation >= 2)
+	{
+		if (lastChoix == 1)
+		{
+		reflecteur_creation(v_tab[0], v_tab[1]);
+		nb_element_creation = 0;
+		}
+		else if (lastChoix == 2)
+		{
+			//absorbeur
+		}
+		else
+		{
+			projecteur_creation(v_tab[0], v_tab[1]);
+			nb_element_creation = 0;
+		}
+	
 	}
 }
 	
