@@ -22,11 +22,12 @@ VECTEUR calculer_vecteur_unitaire(VECTEUR v);
 VECTEUR calculer_difference_normal(SEGMENT s);
 VECTEUR calculer_sens_inverse(VECTEUR v);
 VECTEUR vecteur_multiplication_scalaire(VECTEUR vect, double scalaire);
+int is_segment_null(SEGMENT s);
 double produit_vectoriel(VECTEUR v1, VECTEUR v2);
 double produit_scalaire(VECTEUR v1, VECTEUR v2);
 int detection_parallelisme(SEGMENT s1, SEGMENT s2);
 int detection_intersection(SEGMENT s1, SEGMENT s2);
-VECTEUR trajectoire_reflechie(VECTEUR position, double alpha);
+VECTEUR detection_point_intersection(SEGMENT s1, SEGMENT s2);
 VECTEUR new_vecteur(double x, double y);
 
 #endif

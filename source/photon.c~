@@ -1,9 +1,5 @@
 #include "photon.h"
-#include "projecteur.h"
-#include "reflecteur.h"
-#include "absorbeur.h"
 #include "graphic.h"
-#include "utilitaire.h"
 
 static int nb_element_ph = 0;
 static int nb_expected_ph = 0;
@@ -83,11 +79,11 @@ void photon_free()
 	nb_expected_ph = 0;
 }
 
-
+//#include "utilitaire.c"
 //method pour accéder aux éléments
 int photon_get_nb()	
 {
-	return nb_element_ph;
+	return nb_expected_ph;
 }
 
 
@@ -107,37 +103,34 @@ void photon_update()
 			photon_retirer(up_tete->id);
 			up_tete = NULL;
 		}
-		else
+		
+		if(reflecteur_dectection_collision(s))
 		{
-			SEGMENT s_reflecteur;
-			s_reflecteur = reflecteur_dectection_collision(s);
-			if(is_segment_null(s_reflecteur))
-			{
-				photon_trajectoire_reflechie(&(up_tete->ph), s_reflecteur);
-				VECTEUR point_intersection = detection_point_intersection(s, s_reflecteur);
-				double distance = calculate_distance(s.fin, point_intersection);
-				(up_tete->ph).position = point_intersection;
-				(up_tete->ph).position.x += ((distance)*cos((up_tete->ph).alpha));
-				(up_tete->ph).position.y += ((distance)*sin((up_tete->ph).alpha));
-			}
+			test_fonc();
+			//DO STUFF
 		}
-		up_tete = suivant;	
+			
+		up_tete = suivant;
+		/*
+		(up_tete->ph).position.x += VPHOT*DELTA_T*cos((up_tete->ph).alpha);
+		(up_tete->ph).position.y += VPHOT*DELTA_T*sin((up_tete->ph).alpha);
+		PHOTON_LISTE* suivant = up_tete->suivant;
+		if(absorbeur_dectection_collision((up_tete->ph).position.x, (up_tete->ph).position.y))
+		{
+			photon_retirer(up_tete->id);
+			up_tete = NULL;
+		}
+		up_tete = suivant;
+		*/
+			
 	}
-	projecteur_creer_photon();
+	
 }
 
-void photon_trajectoire_reflechie(PHOTON* ph, SEGMENT s_reflecteur)
-{
-	VECTEUR t = {cos(ph->alpha), sin(ph->alpha)};	//car sa longueur = 1
-	VECTEUR n = calculer_difference_unitaire(s_reflecteur);
-	if(produit_scalaire(t, n) > 0)
-		n = calculer_sens_inverse(n);
-	VECTEUR intermediaire = vecteur_multiplication_scalaire(n, 2*produit_scalaire(t, n));
-	VECTEUR w = vecteur_difference(t, intermediaire);
-	double angle = atan2(w.y,w.x);
-	ph->alpha = angle;
+void test_fonc(){
+	VECTEUR w ;
+	w = trajectoire_reflechie(new_vecteur(4,4), 4);
 }
-
 int photon_add_ph(PHOTON ph)
 {
 	PHOTON_LISTE* liste_ph;
@@ -146,7 +139,6 @@ int photon_add_ph(PHOTON ph)
 		error_msg("Erreur dans allocation mémoire de photon");
 		return 1;
 	}
-	
 	liste_ph->id = index_count;
 	liste_ph->ph = ph;
 	liste_ph->suivant = tete;
@@ -155,15 +147,6 @@ int photon_add_ph(PHOTON ph)
 	index_count++;
 	
 	return 0;
-}
-
-void photon_add(VECTEUR position, double angle)
-{
-	PHOTON ph;
-	ph.position = position;
-	ph.alpha = angle;
-	
-	photon_add_ph(ph);
 }
 
 int photon_retirer(int id)
@@ -193,23 +176,6 @@ int photon_retirer(int id)
 	
 	return 1;
 }
-
-void photon_destruction_dehors(int xmin, int xmax,int ymin, int ymax)
-{
-	PHOTON_LISTE* element = tete;
-	while (element)
-	{
-		if ((element->ph).position.x < xmin || (element->ph).position.x > xmax
-			||(element->ph).position.y < ymin || (element->ph).position.y > ymax)
-			{
-				photon_retirer(element->id);
-			}
-		
-		element = element->suivant;
-		
-	}
-}
-
 
 void photon_print_file(FILE* file)
 {

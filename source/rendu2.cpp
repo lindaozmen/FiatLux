@@ -8,6 +8,7 @@ extern "C"
 	#include "modele.h"
 	#include "graphic.h"
 	#include <math.h>
+	#include "utilitaire.h"
 }
 
 namespace
@@ -20,6 +21,7 @@ namespace
 	VECTEUR dessin_start, dessin_end;		//pour zoom
 	double xmin = -DMAX, xmax = DMAX, ymin = -DMAX, ymax = DMAX;
 	int bouton_start = 0;
+	int selecting = 0;
 
 	//Fenetre glui
 	GLUI *glui;
@@ -38,7 +40,6 @@ void display_cb();
 void control_cb(int id);
 void start_graphic(int* argc, char ** argv);
 void add_elements_glui();
-void draw_all();
 void mouse_cb(int button, int state, int x, int y);
 VECTEUR glut_to_opengl_coordonnees(int x, int y);
 
@@ -54,7 +55,7 @@ void reshape_cb(int w, int h)
 	window_width = w;
 	window_height = h;
 	
-	glutPostRedisplay();
+//	glutPostRedisplay();
 }
 
 //l'affichage de l'état courant du système
@@ -71,28 +72,14 @@ void display_cb()
 	else
 		glOrtho(gauche*aspect_ratio, droite*aspect_ratio, bas, haut, -1, 1);
     
-	draw_all();
+	modele_draw();
 	
 	if(dessiner == 1)
 	{
-		graphic_set_color3f(0.0, 0.0, 0.0);
-		double xc = (dessin_start.x + dessin_end.x)/2;
-		double yc = (dessin_start.y + dessin_end.y)/2; 
-		double w = fabs(dessin_start.x - dessin_end.x);
-		double h = fabs(dessin_start.y - dessin_end.y);
-		graphic_draw_rectangle(xc, yc, w, h, GRAPHIC_EMPTY);
+		modele_dessin_carre_zoom(dessin_start, dessin_end);
 	}
 	
 	glutSwapBuffers();
-}
-
-void draw_all()
-{
-	projecteur_drawing();
-	reflecteur_drawing();
-	absorbeur_drawing();
-	photon_drawing();
-
 }
 
 void mouse_cb(int button, int state, int x, int y)
@@ -105,6 +92,16 @@ void mouse_cb(int button, int state, int x, int y)
 			dessin_start = glut_to_opengl_coordonnees(x, y);
 			dessin_end = dessin_start;
 		}
+		else if (button == GLUT_RIGHT_BUTTON)
+		{
+			VECTEUR coordonnees = glut_to_opengl_coordonnees(x, y);
+			if (radio1->get_int_val() == 0)
+			{
+				modele_element_plus_proche(coordonnees);
+			}
+			selecting = 1;
+		}
+		
    	}
    	else if(state == GLUT_UP)
    	{
@@ -137,6 +134,11 @@ void mouse_cb(int button, int state, int x, int y)
 			}
 			dessiner = 0;
 		}
+		else if (button == GLUT_RIGHT_BUTTON)
+		{
+			selecting = 0;
+		}
+		
 	}
 	
 	glutPostRedisplay();
@@ -161,8 +163,15 @@ VECTEUR glut_to_opengl_coordonnees(int x, int y)
 
 void motion_cb(int x, int y)
 {
-	dessin_end = glut_to_opengl_coordonnees(x, y);
+	VECTEUR coordonnees = glut_to_opengl_coordonnees(x, y);
+	dessin_end = coordonnees;
 	
+	if(selecting == 1){
+			if (radio1->get_int_val() == 0)
+			{
+				modele_element_plus_proche(coordonnees);
+			}
+	}
 	glutPostRedisplay();
 }
 
@@ -172,14 +181,20 @@ void keyboard_cb(unsigned char key, int x, int y)
 	{
 		case 'r':
 		{
-			break;
-		}
-		case 'd':
-		{
+			xmin = -DMAX;
+			xmax = DMAX;
+			ymin = -DMAX;
+			ymax = DMAX;
 			break;
 		}
 		case 'k':
 		{
+			modele_destruction_photon_dehors(xmin, xmax, ymin, ymax);
+			break;
+		}
+		case 'd':
+		{
+			modele_effacer_element();
 			break;
 		}
 	}
@@ -192,13 +207,13 @@ void control_cb(int id)
 	{
 		case 1: 
 		{
-			destruction_simulation();
+			modele_destruction_simulation();
 			char* load_file = (char*)(fn1->get_text());
 			int verif_lecture = modele_lecture(load_file,0);
 			
 			if(verif_lecture == 1)
 			{
-				destruction_simulation();
+				modele_destruction_simulation();
 			}
 			aspect_ratio = 1.0*window_width/window_height;
 			xmin = -DMAX, xmax = DMAX, ymin = -DMAX, ymax = DMAX;
@@ -217,7 +232,6 @@ void control_cb(int id)
 			{
 				bouton_start = 1;
 				start->set_name((char*)"Stop");
-				printf("sim_elem_release\n");
 			}
 			else if(bouton_start == 1)
 			{
@@ -230,9 +244,7 @@ void control_cb(int id)
 		{
 			bouton_start = 0;
 			start->set_name((char*)"Start !");
-			printf("one step\n");
 			photon_update();
-			printf("sim_update\n");
 			break;
 		}
 			
@@ -247,13 +259,17 @@ void idle_cb()
 	if(glutGetWindow() != main_window)
 		glutSetWindow(main_window);
 		
+	//Check if one of the radio buttons has changed	
+	modele_check_radio(radio1->get_int_val(), radio2->get_int_val());
 	if(bouton_start == 1)
 	{
-		printf("sim_update\n");
 		photon_update();
-		
 	}
 	
+	edt_ph->set_int_val(photon_get_nb());
+	edt_pr->set_int_val(projecteur_get_nombre());
+	edt_abs->set_int_val(absorbeur_get_nombre());
+	edt_ref->set_int_val(reflecteur_get_nombre());
 	
 	glutPostRedisplay();
 }
@@ -330,6 +346,7 @@ void add_elements_glui(){
 	radio2=glui->add_radiogroup_to_panel(mpe);
 	glui->add_radiobutton_to_group(radio2,"Projecteur");
 	glui->add_radiobutton_to_group(radio2,"Reflecteur");
+
 	glui->add_radiobutton_to_group(radio2,"Absorbeur");
 
 	glui->set_main_gfx_window(main_window);
@@ -349,7 +366,7 @@ int main(int argc, char * argv[])
 			int test_dest = modele_lecture(argv[2],0);
 			if(test_dest == 1)
 			{
-				destruction_simulation();
+				modele_destruction_simulation();
 			}
 		}
 	}
@@ -359,7 +376,7 @@ int main(int argc, char * argv[])
 			int test_dest = modele_lecture(argv[2],1);
 			if(test_dest == 1)
 			{
-				destruction_simulation();
+				modele_destruction_simulation();
 			}
 		}
 		modele_lecture_rendu2();
@@ -370,14 +387,14 @@ int main(int argc, char * argv[])
 			int test_dest = modele_lecture(argv[2],0);
 			if(test_dest == 1)
 			{
-				destruction_simulation();
+				modele_destruction_simulation();
 			}
 		}
 		
 		start_graphic(&argc, argv);
 		glutMainLoop();
 	}
-	destruction_simulation();
+	modele_destruction_simulation();
 	return EXIT_SUCCESS;
 }
 

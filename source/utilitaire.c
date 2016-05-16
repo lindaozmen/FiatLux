@@ -1,6 +1,7 @@
 #include "utilitaire.h"
 #include "constantes.h"
 #include <math.h>
+#include <stdio.h>
 
 double calculate_distance(VECTEUR vect1, VECTEUR vect2)	
 {
@@ -80,6 +81,13 @@ VECTEUR vecteur_multiplication_scalaire(VECTEUR vect, double scalaire)
 	v_final.y = vect.y*scalaire;
 	
 	return v_final;
+}
+
+int is_segment_null(SEGMENT s)
+{
+	if(	s.deb.x == 0 && s.deb.y == 0 && s.fin.x == 0 && s.fin.y == 0)
+		return 0;
+	return 1;
 }
 
 double produit_vectoriel(VECTEUR v1, VECTEUR v2)
@@ -185,26 +193,40 @@ int detection_intersection(SEGMENT s1, SEGMENT s2)
 	}
 	return 1;
 }
-	
-VECTEUR trajectoire_reflechie(VECTEUR position, double alpha)
-{
-	VECTEUR t = calculer_vecteur_unitaire(position);
-	VECTEUR n = vecteur_multiplication_scalaire(t, cos(alpha));
-	VECTEUR s = vecteur_multiplication_scalaire(n, 2*produit_scalaire(t,n));
-	VECTEUR w = vecteur_difference(t,s);
-	
-	return w;
-}
-	
 
-VECTEUR new_vecteur(double x, double y)
+VECTEUR detection_point_intersection(SEGMENT s1, SEGMENT s2)
 {
-	VECTEUR new_vecteur =  {x, y};
+	VECTEUR v1 = vecteur_difference(s1.deb, s1.fin);
+	VECTEUR v2 = vecteur_difference(s2.deb, s2.fin);
+	VECTEUR pt_intersection;
 	
-	return new_vecteur;
+	if (v1.x == 0)
+	{
+		double pente2 = v2.y/v2.x;
+		pt_intersection.x = s1.deb.x;
+		pt_intersection.y = pente2*(pt_intersection.x-s2.deb.x)+s2.deb.y;
+	}
+	else if (v2.x == 0)
+	{
+		double pente1 = v1.y/v1.x;
+		pt_intersection.x = s2.deb.x;
+		pt_intersection.y = pente1*(pt_intersection.x-s1.deb.x)+s1.deb.y;
+	}
+	else
+	{
+		double pente1 = v1.y/v1.x;
+		double pente2 = v2.y/v2.x;
+		pt_intersection.x =  (pente1*s1.deb.x-pente2*s2.deb.x+s2.deb.y-s1.deb.y)/(pente1-pente2);
+		pt_intersection.y = pente1*(pt_intersection.x-s1.deb.x)+s1.deb.y;
+	}
+	
+	return pt_intersection;
+} 
+	
+	
+	
+VECTEUR new_vecteur(double x, double y){
+	VECTEUR v = {x,y};
+	return v;
 }			
-			
-			
-			
-			
 			

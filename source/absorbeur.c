@@ -119,7 +119,7 @@ int absorbeur_dectection_collision(SEGMENT s)
 {
 
 	int i, j;
-	for(i = 0; i < nb_expected_a; i++)
+	for(i = 0; i < nb_element_a; i++)
 	{
 		for(j = 0; j < tab_a[i].nbp-1; j++)
 		{	
@@ -131,23 +131,22 @@ int absorbeur_dectection_collision(SEGMENT s)
 	return 0;
 }
 
-int absorbeur_plus_proche_selection(int x, int y)
+int absorbeur_plus_proche_selection(VECTEUR vect_coordonne)
 {
-	VECTEUR point = {x, y};
-	VECTEUR moyen = {((tab_a->elements)->x + (tab_a->elements)->x)/2, 
-						((tab_a->elements)->y + (tab_a->elements)->y)/2};
-	double min_distance = calculate_distance(point, moyen);
+	VECTEUR point = vect_coordonne;
+	VECTEUR vect = {(tab_a->elements)->x, (tab_a->elements)->y};
+	double min_distance = calculate_distance(point, vect);
 	double min_temporaire = 0;
 	int min_i = 0;
 	int i, j;
-	for(i = 0; i < nb_expected_a; i++)
+	for(i = 0; i < nb_element_a; i++)
 	{
 		for(j = 0; j < tab_a[i].nbp-1; j++)
 		{	
-			moyen.x = (((tab_a+i)->elements+j)->x + ((tab_a+i)->elements+j+1)->x)/2;
-			moyen.y = (((tab_a+i)->elements+j)->y + ((tab_a+i)->elements+j+1)->y)/2;
+			vect.x = ((tab_a+i)->elements+j)->x;
+			vect.y = ((tab_a+i)->elements+j)->y;
 						
-			min_temporaire = calculate_distance(point, moyen);
+			min_temporaire = calculate_distance(point, vect);
 			if(min_temporaire < min_distance)
 			{
 				min_distance = min_temporaire;
@@ -182,17 +181,44 @@ int absorbeur_add_a(ABSORBEUR a)
 		if(!(tab_a = malloc(sizeof(ABSORBEUR))))
 			return 1;
 	}
-	
+	else if(nb_element_a >= nb_expected_a)
+	{
+		if(!(tab_a = realloc(tab_a,sizeof(ABSORBEUR)*(nb_element_a+1))))
+			return 1;
+	}
 	*(tab_a+nb_element_a) = a;
 	nb_element_a++;
 	
 	return 0;
 }
 
-
+void absorbeur_creation()
+{
+	
+}
+void absorbeur_retirer(int id)
+{
+	ABSORBEUR* temp = malloc((nb_element_a-1)*sizeof(ABSORBEUR));
+	int i, j = 0;
+	
+	for (i = 0; i < nb_element_a; i++)
+	{
+		if (i == id)	
+			continue;
+				
+		*(temp+j) = *(tab_a+i);
+		j++; 
+	}
+	nb_element_a --;
+	free((tab_a+id)->elements);
+	free(tab_a);
+	tab_a = temp;
+}
+	
+	
 int absorbeur_get_nombre()
 {
-	return nb_expected_a;
+	return nb_element_a;
 }
 
 int absorbeur_nombre_vecteur(int id)
@@ -214,7 +240,6 @@ SEGMENT* absorbeur_get_segment(int id)
 	return a;
 }
 		
-
 void absorbeur_draw_obj(int id, int id_pt)
 {
 	double debx = ((tab_a+id)->elements+id_pt)->x;
@@ -227,6 +252,7 @@ void absorbeur_draw_obj(int id, int id_pt)
 	
 	graphic_draw_segment(debx,deby,finx,finy);
 }
+   
 
 void absorbeur_drawing()
 {
@@ -239,6 +265,20 @@ void absorbeur_drawing()
 		}
 	}
 }
+
+void absorbeur_draw_selection(int id)
+{
+	graphic_set_line_width(4.);
+	graphic_set_color3f(1,1,0);
+	
+	int i;
+	for(i = 0; i < (tab_a+id)->nbp-1; i++)
+	{
+		graphic_draw_segment(((tab_a+id)->elements+i)->x, ((tab_a+id)->elements+i)->y,
+							((tab_a+id)->elements+i+1)->x, ((tab_a+id)->elements+i+1)->y);
+	}
+}
+
 int absorbeur_get_x(int id, int nb){
 	return ((tab_a+id)->elements+nb)->x;
 }

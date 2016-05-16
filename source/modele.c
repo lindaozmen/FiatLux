@@ -1,5 +1,11 @@
 #include "modele.h"
+#include "graphic.h"
+#include <math.h>
 #include <stdio.h>
+
+int id_select = -1;
+int lastMode = -1;
+int lastChoix = -1;
 
 int modele_lecture(char * nomfichier, int mode_verification)
 {
@@ -7,6 +13,7 @@ int modele_lecture(char * nomfichier, int mode_verification)
 	int etat = 0;
 	char tab[MAX_LINE];
 	FILE * fentree = NULL;
+	id_select = -1;
 	
 	fentree = fopen(nomfichier, "r");
 	if(fentree == NULL)
@@ -86,6 +93,15 @@ int modele_lecture(char * nomfichier, int mode_verification)
 	return 0;
 }
 
+
+void modele_destruction_simulation()
+{
+	projecteur_free();
+	reflecteur_free();
+	absorbeur_free();
+	photon_free();
+}
+
 void modele_lecture_rendu2()
 {
 	int i,j;
@@ -107,7 +123,7 @@ void modele_lecture_rendu2()
 				if(detection_parallelisme(s1,s2) == 1){
 					if(detection_intersection(s1,s2) == 0){
 						error_lecture_intersection(ERR_ABSORBEUR, j, ERR_REFLECTEUR,i);
-						destruction_simulation();
+						modele_destruction_simulation();
 						return;
 				}
 			 }
@@ -132,7 +148,7 @@ void modele_lecture_rendu2()
 				if(detection_parallelisme(s1,s2) == 1){
 					if(detection_intersection(s1,s2) == 0){
 						error_lecture_intersection(ERR_ABSORBEUR, j, ERR_PROJECTEUR,i);
-						destruction_simulation();
+						modele_destruction_simulation();
 						return;
 				}
 			 }
@@ -155,7 +171,7 @@ void modele_lecture_rendu2()
 			if(detection_parallelisme(s1,s2) == 1){
 				if(detection_intersection(s1,s2) == 0){
 					error_lecture_intersection(ERR_REFLECTEUR, i, ERR_REFLECTEUR,j);
-					destruction_simulation();
+					modele_destruction_simulation();
 					return;
 				}
 				 
@@ -178,7 +194,7 @@ void modele_lecture_rendu2()
 			if(detection_parallelisme(s1,s2) == 1){
 				if(detection_intersection(s1,s2) == 0){
 					error_lecture_intersection(ERR_PROJECTEUR, i, ERR_REFLECTEUR,j);
-					destruction_simulation();
+					modele_destruction_simulation();
 					return;
 				}
 				 
@@ -188,12 +204,100 @@ void modele_lecture_rendu2()
 	
 }
 
-void destruction_simulation()
+void modele_check_radio(int mode, int choix){
+	if(lastMode != mode || lastChoix != choix){
+		lastMode = mode;
+		lastChoix = choix;
+		id_select = -1;
+	}
+}
+void modele_element_plus_proche(VECTEUR vect_coordonne)
 {
-	projecteur_free();
-	reflecteur_free();
-	absorbeur_free();
-	photon_free();
+	if(lastChoix == 1) //cas reflecteur
+		{
+			if(reflecteur_get_nombre() > 0)
+				id_select = reflecteur_plus_proche_selection(vect_coordonne);
+		}
+		else if(lastChoix== 2) //cas absorbeur
+		{
+			if(absorbeur_get_nombre() > 0)
+				id_select = absorbeur_plus_proche_selection(vect_coordonne);
+		}
+		else //cas projecteur (par défaut)
+		{
+			if(projecteur_get_nombre() > 0)
+				id_select = projecteur_plus_proche_selection(vect_coordonne);
+		}
+}
+
+void modele_effacer_element()
+{
+	
+	if (lastMode == 0 && id_select >= 0)
+	{
+		if(lastChoix == 1) //cas reflecteur
+		{
+			reflecteur_retirer(id_select);
+		}
+		else if(lastChoix== 2) //cas absorbeur
+		{
+			absorbeur_retirer(id_select);
+		}
+		else //cas projecteur (par défaut)
+		{
+			projecteur_retirer(id_select);
+		}
+		id_select = -1;
+	}
+}
+	
+	
+void modele_draw_all()
+{
+	projecteur_drawing();
+	reflecteur_drawing();
+	absorbeur_drawing();
+	photon_drawing();
+
+}
+
+void modele_draw()
+{
+	modele_draw_all();
+	
+	if(id_select >= 0){
+		if(lastMode == 0)
+		{
+			if(lastChoix == 1) //cas reflecteur
+			{
+				reflecteur_draw_selection(id_select);
+			}
+			else if(lastChoix == 2) //cas absorbeur
+			{
+				absorbeur_draw_selection(id_select);
+			}
+			else //cas projecteur (par défaut)
+			{
+				projecteur_draw_selection(id_select);
+			}
+		}
+	}
+}
+
+void modele_dessin_carre_zoom(VECTEUR dessin_start, VECTEUR dessin_end)
+{
+	graphic_set_color3f(0.0, 0.0, 0.0);
+	double xc = (dessin_start.x + dessin_end.x)/2;
+	double yc = (dessin_start.y + dessin_end.y)/2; 
+	double w = fabs(dessin_start.x - dessin_end.x);
+	double h = fabs(dessin_start.y - dessin_end.y);
+	graphic_draw_rectangle(xc, yc, w, h, GRAPHIC_EMPTY);
+}	
+
+
+void modele_destruction_photon_dehors(int xmin, int xmax,int ymin, int ymax)
+{
+	photon_destruction_dehors(xmin, xmax, ymin, ymax);
 }
 
 void modele_save_elements(char* nom_fichier)
