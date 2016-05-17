@@ -192,13 +192,23 @@ int absorbeur_add_a(ABSORBEUR a)
 	return 0;
 }
 
-void absorbeur_creation(ABSORBEUR* a, int nb_point)
+void absorbeur_creation(VECTEUR* v, int nb_point)
 {
 	ABSORBEUR abs;
 	abs.nbp = nb_point;
-	abs.elements = (a->elements);
-	
+	abs.elements = malloc(sizeof(VECTEUR)*nb_point);
+	int i = 0;
+	for(i = 0; i < nb_point; i++){
+		*(abs.elements+i)=*(v+i);
+	}
 	absorbeur_add_a(abs);
+}
+
+void absorbeur_ramplacer_dernier(VECTEUR* v, int nb_point)
+{
+	(tab_a+nb_element_a-1)->elements = realloc((tab_a+nb_element_a-1)->elements, sizeof(VECTEUR)*nb_point);
+	*((tab_a+nb_element_a-1)->elements +nb_point-1) = *(v+nb_point-1);
+	(tab_a+nb_element_a-1)->nbp = nb_point;
 }
 
 void absorbeur_retirer(int id)

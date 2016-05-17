@@ -211,6 +211,7 @@ void modele_check_radio(int mode, int choix){
 		lastMode = mode;
 		lastChoix = choix;
 		id_select = -1;
+		nb_element_creation = 0;
 	}
 }
 void modele_element_plus_proche(VECTEUR vect_coordonne)
@@ -256,27 +257,44 @@ void modele_effacer_element()
 void modele_creation(VECTEUR v)
 {
 	printf("%f %f\n", v.x, v.y);
-	v_tab[nb_element_creation] = v;
-	nb_element_creation ++;
-	
-	if (nb_element_creation >= 2)
+	if (nb_element_creation < MAX_PT)
 	{
-		if (lastChoix == 1)
+		v_tab[nb_element_creation] = v;
+		nb_element_creation ++;
+				
+		if (nb_element_creation >= 2)
 		{
-		reflecteur_creation(v_tab[0], v_tab[1]);
-		nb_element_creation = 0;
-		}
-		else if (lastChoix == 2)
-		{
-			//absorbeur
-		}
-		else
-		{
-			projecteur_creation(v_tab[0], v_tab[1]);
+			if (lastChoix == 1)
+			{
+			reflecteur_creation(v_tab[0], v_tab[1]);
 			nb_element_creation = 0;
+			}
+			else if (lastChoix == 2)
+			{
+				if (nb_element_creation > 2)
+				{
+					absorbeur_ramplacer_dernier(v_tab, nb_element_creation);
+				}
+				else
+				{
+					absorbeur_creation(v_tab, nb_element_creation);
+				}
+			}
+			else
+			{
+				projecteur_creation(v_tab[0], v_tab[1]);
+				nb_element_creation = 0;
+			}
+		
 		}
-	
 	}
+	else
+	{
+		printf("Ce point est ignoré car le nombre de points max est déjà atteint\n");
+
+	}
+	
+	
 }
 	
 	
