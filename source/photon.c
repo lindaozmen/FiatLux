@@ -113,12 +113,19 @@ void photon_update()
 			s_reflecteur = reflecteur_dectection_collision(s);
 			if(is_segment_null(s_reflecteur))
 			{
+				
+				(up_tete->ph).position.x -= VPHOT*DELTA_T*cos((up_tete->ph).alpha);
+				(up_tete->ph).position.y -= VPHOT*DELTA_T*sin((up_tete->ph).alpha);
+				printf("ANGLE: %f\n", (up_tete->ph).alpha);
 				photon_trajectoire_reflechie(&(up_tete->ph), s_reflecteur);
-				VECTEUR point_intersection = detection_point_intersection(s, s_reflecteur);
-				double distance = calculate_distance(s.fin, point_intersection);
-				(up_tete->ph).position = point_intersection;
-				(up_tete->ph).position.x += ((distance)*cos((up_tete->ph).alpha));
-				(up_tete->ph).position.y += ((distance)*sin((up_tete->ph).alpha));
+				
+				//VECTEUR point_intersection = detection_point_intersection(s, s_reflecteur);
+				//printf("COLLISION: %f %f\n", point_intersection.x, point_intersection.y);
+				//double distance = calculate_distance(s.fin, point_intersection);
+				//(up_tete->ph).position = point_intersection;
+				(up_tete->ph).position.x += (VPHOT*DELTA_T*cos((up_tete->ph).alpha));
+				(up_tete->ph).position.y += (VPHOT*DELTA_T*sin((up_tete->ph).alpha));
+				printf("ANGLE: %f\n", (up_tete->ph).alpha);
 			}
 		}
 		up_tete = suivant;	

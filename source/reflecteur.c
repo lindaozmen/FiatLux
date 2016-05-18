@@ -83,7 +83,7 @@ void reflecteur_retirer(int id)
 	REFLECTEUR* temp = malloc((nb_element_r-1)*sizeof(REFLECTEUR));
 	int i, j = 0;
 	
-	for (i = 0; i < nb_element_r-1; i++)
+	for (i = 0; i < nb_element_r; i++)
 	{
 		if (i == id)	
 			continue;

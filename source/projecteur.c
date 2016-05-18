@@ -221,12 +221,14 @@ void projecteur_creer_photon()
 	for(i = 0; i < nb_element_pr; i++)
 	{
 		position = (tab_pr+i)->position;
+		position.x += VPHOT*DELTA_T*cos(alpha);
+		position.y += VPHOT*DELTA_T*sin(alpha);
 		alpha = (tab_pr+i)->alpha;
 		for(j = 0; j < NBPH; j++)
 		{
 			photon_add(position, alpha);
 			position.x -= EPSIL_PROJ*sin(alpha);
-			position.y -= EPSIL_PROJ*cos(alpha);
+			position.y += EPSIL_PROJ*cos(alpha);
 		}
 	}
 }
