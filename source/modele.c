@@ -109,101 +109,106 @@ void modele_lecture_rendu2()
 	int i,j;
 	//Reflecteur absorbeur
 	int w;
-	for(i = reflecteur_get_nombre()-1; i >=0; i--){
+	for(i = reflecteur_get_nombre()-1; i >=0; i--)
+	{
 		SEGMENT s1;
 		s1.deb.x = reflecteur_get_deb_x(i);
 		s1.deb.y = reflecteur_get_deb_y(i);
 		s1.fin.x = reflecteur_get_fin_x(i);
 		s1.fin.y = reflecteur_get_fin_y(i);
-		for(j = 0; j < absorbeur_get_nombre(); j++){
-			for(w = 0; w < absorbeur_nombre_vecteur(j)-1; w++){
+		for(j = 0; j < absorbeur_get_nombre(); j++)
+		{
+			for(w = 0; w < absorbeur_nombre_vecteur(j)-1; w++)
+			{
 				SEGMENT s2;
 				s2.deb.x = absorbeur_get_x(j,w);
 				s2.deb.y = absorbeur_get_y(j,w);
 				s2.fin.x = absorbeur_get_x(j,w+1);
 				s2.fin.y = absorbeur_get_y(j,w+1);
-				if(detection_parallelisme(s1,s2) == 1){
-					if(detection_intersection(s1,s2) == 0){
-						error_lecture_intersection(ERR_ABSORBEUR, j, ERR_REFLECTEUR,i);
-						modele_destruction_simulation();
-						return;
+				if(detection_parallelisme(s1,s2) == 1)
+				{
+					error_lecture_intersection(ERR_ABSORBEUR, j, ERR_REFLECTEUR,i);
+					modele_destruction_simulation();
+					return;
 				}
-			 }
 			}
 		}
 	}
 	
 	//Projecteur absorbeur
-	for(i = projecteur_get_nombre()-1; i >=0; i--){
+	for(i = projecteur_get_nombre()-1; i >=0; i--)
+	{
 		SEGMENT s1;
 		s1.deb.x = projecteur_get_deb_x(i);
 		s1.deb.y = projecteur_get_deb_y(i);
 		s1.fin.x = projecteur_get_fin_x(i);
 		s1.fin.y = projecteur_get_fin_y(i);
-		for(j = 0; j < absorbeur_get_nombre(); j++){
-			for(w = 0; w < absorbeur_nombre_vecteur(j)-1; w++){
+		for(j = 0; j < absorbeur_get_nombre(); j++)
+		{
+			for(w = 0; w < absorbeur_nombre_vecteur(j)-1; w++)
+			{
 				SEGMENT s2;
 				s2.deb.x = absorbeur_get_x(j,w);
 				s2.deb.y = absorbeur_get_y(j,w);
 				s2.fin.x = absorbeur_get_x(j,w+1);
 				s2.fin.y = absorbeur_get_y(j,w+1);
-				if(detection_parallelisme(s1,s2) == 1){
-					if(detection_intersection(s1,s2) == 0){
-						error_lecture_intersection(ERR_ABSORBEUR, j, ERR_PROJECTEUR,i);
-						modele_destruction_simulation();
-						return;
+				if(detection_parallelisme(s1,s2) == 1)
+				{
+					error_lecture_intersection(ERR_ABSORBEUR, j, ERR_PROJECTEUR,i);
+					modele_destruction_simulation();
+					return;
 				}
 			 }
-			}
 		}
 	}
+
 	//Reflecteur avec reflecteur
-	for(i = reflecteur_get_nombre()-1; i >=0; i--){
+	for(i = reflecteur_get_nombre()-1; i >=0; i--)
+	{
 		SEGMENT s1;
 		s1.deb.x = reflecteur_get_deb_x(i);
 		s1.deb.y = reflecteur_get_deb_y(i);
 		s1.fin.x = reflecteur_get_fin_x(i);
 		s1.fin.y = reflecteur_get_fin_y(i);
-		for(j = 0; j < reflecteur_get_nombre(); j++){
+		for(j = 0; j < reflecteur_get_nombre(); j++)
+		{
 			SEGMENT s2;
 			s2.deb.x = reflecteur_get_deb_x(j);
 			s2.deb.y = reflecteur_get_deb_y(j);
 			s2.fin.x = reflecteur_get_fin_x(j);
 			s2.fin.y = reflecteur_get_fin_y(j);
-			if(detection_parallelisme(s1,s2) == 1){
-				if(detection_intersection(s1,s2) == 0){
-					error_lecture_intersection(ERR_REFLECTEUR, i, ERR_REFLECTEUR,j);
-					modele_destruction_simulation();
-					return;
-				}
-				 
+			if(detection_parallelisme(s1,s2) == 1)
+			{
+				error_lecture_intersection(ERR_REFLECTEUR, i, ERR_REFLECTEUR,j);
+				modele_destruction_simulation();
+				return;
 			}
 		}
-	}	
+	}
+		
 	//Projecteur reflecteur
-	for(i = projecteur_get_nombre()-1; i >=0; i--){
+	for(i = projecteur_get_nombre()-1; i >=0; i--)
+	{
 		SEGMENT s1;
 		s1.deb.x = projecteur_get_deb_x(i);
 		s1.deb.y = projecteur_get_deb_y(i);
 		s1.fin.x = projecteur_get_fin_x(i);
 		s1.fin.y = projecteur_get_fin_y(i);
-		for(j = 0; j < reflecteur_get_nombre(); j++){
+		for(j = 0; j < reflecteur_get_nombre(); j++)
+		{
 			SEGMENT s2;
 			s2.deb.x = reflecteur_get_deb_x(j);
 			s2.deb.y = reflecteur_get_deb_y(j);
 			s2.fin.x = reflecteur_get_fin_x(j);
 			s2.fin.y = reflecteur_get_fin_y(j);
-			if(detection_parallelisme(s1,s2) == 1){
-				if(detection_intersection(s1,s2) == 0){
-					error_lecture_intersection(ERR_PROJECTEUR, i, ERR_REFLECTEUR,j);
-					modele_destruction_simulation();
-					return;
-				}
-				 
+			if(detection_parallelisme(s1,s2) == 1)
+			{
+				error_lecture_intersection(ERR_PROJECTEUR, i, ERR_REFLECTEUR,j);
+				modele_destruction_simulation();
+				return;
 			}
 		}
 	}
-	
 }
 
 void modele_check_radio(int mode, int choix){
@@ -341,7 +346,7 @@ void modele_dessin_carre_zoom(VECTEUR dessin_start, VECTEUR dessin_end)
 }	
 
 
-void modele_destruction_photon_dehors(int xmin, int xmax,int ymin, int ymax)
+void modele_destruction_photon_dehors(double xmin, double xmax,double ymin, double ymax)
 {
 	photon_destruction_dehors(xmin, xmax, ymin, ymax);
 }

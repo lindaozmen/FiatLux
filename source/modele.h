@@ -19,7 +19,7 @@ void modele_draw();
 void modele_draw_all();
 void modele_dessin_carre_zoom(VECTEUR dessin_start, VECTEUR dessin_end);
 void modele_destruction_simulation();
-void modele_destruction_photon_dehors(int xmin, int xmax,int ymin, int ymax);
+void modele_destruction_photon_dehors(double xmin, double xmax,double ymin, double ymax);
 void modele_save_elements(char* nom_fichier);
 void modele_check_radio(int mode, int choix);
 

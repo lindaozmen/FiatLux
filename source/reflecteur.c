@@ -108,7 +108,7 @@ SEGMENT reflecteur_dectection_collision(SEGMENT s)
 	for(i = 0; i < nb_element_r; i++)
 	{
 		SEGMENT s_r = {(tab_r + i)->deb, (tab_r + i)->fin};
-		if(detection_intersection(s, s_r) == 0)
+		if(detection_intersection(s, s_r) == 1)
 			return s_r;
 	}
 	SEGMENT s_null;

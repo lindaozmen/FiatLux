@@ -124,7 +124,7 @@ int absorbeur_dectection_collision(SEGMENT s)
 		for(j = 0; j < tab_a[i].nbp-1; j++)
 		{	
 			SEGMENT s_a = {*((tab_a+i)->elements+j), *((tab_a+i)->elements+j+1)};
-			if(detection_intersection(s, s_a) == 0)
+			if(detection_intersection(s, s_a) == 1)
 				return 1;
 		}
 	}

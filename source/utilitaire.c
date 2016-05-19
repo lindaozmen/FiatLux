@@ -110,6 +110,7 @@ int detection_parallelisme(SEGMENT s1, SEGMENT s2)
 	VECTEUR u2 = calculer_difference_unitaire(s2);
 	
 	double pv = produit_vectoriel(u1, u2);
+	double norme1 = calculate_norme_segment(s1);
 	VECTEUR vd1d2 = vecteur_difference(s1.deb, s2.deb);
 	VECTEUR ud1d2 = calculer_vecteur_unitaire(vd1d2);
 	
@@ -123,51 +124,33 @@ int detection_parallelisme(SEGMENT s1, SEGMENT s2)
 			double psu1v2 = produit_scalaire(u1, v2);
 			double psdeb = produit_scalaire(u1, vd1d2);
 			
-			if(psu1v2 < 0)	//direction opposée
+			if(psu1v2 < EPSIL_PARAL)	//direction opposée
 			{
 				if(psdeb > 0)
 				{
-					if((psdeb + psu1v2)>(calculate_norme_segment(s1) + EPSIL_CONTACT))
-					{
+					if((psdeb + psu1v2)>(norme1 + EPSIL_CONTACT))
 						return 0;
-					}
-					return 1;
 				}
-				else 
-				{
-					if(psdeb < -EPSIL_CONTACT)
-					{
-						return 0;
-					}
-					return 1;
-				}
-				return 1;
+				else if(psdeb < -EPSIL_CONTACT)
+					return 0;
 			}
-			else if(psu1v2 > 0)
+			else 
 			{
 				if(psdeb > 0)
 				{
-					if(psdeb>(calculate_norme_segment(s1) + EPSIL_CONTACT))
-					{
+					if(psdeb > norme1 + EPSIL_CONTACT)
 						return 0;
-					}
-					return 1;
 				}
-				else 
-				{
-					if((psdeb + psu1v2)<(-EPSIL_CONTACT))
-					{
-						return 0;
-					}
-					return 1;
-				}
-				return 1;
+				else if(psdeb + psu1v2 < -EPSIL_CONTACT)
+					return 0;
 			}
 			return 1;
 		}
-		return 0;
+		else
+			return 0;
 	}
-	return 1;
+	else
+		return detection_intersection(s1,s2);
 }
 
 int detection_intersection(SEGMENT s1, SEGMENT s2)
@@ -187,11 +170,10 @@ int detection_intersection(SEGMENT s1, SEGMENT s2)
 	{
 		if((fabs(ps2d2d1) < EPSIL_CONTACT || fabs(ps2d2f1) < EPSIL_CONTACT) || ps2d2d1*ps2d2f1 < 0)
 		{
-			//ou effectuer le calcul du point d'intersection
-			return 0;
+			return 1;
 		}
 	}
-	return 1;
+	return 0;
 }
 
 VECTEUR detection_point_intersection(SEGMENT s1, SEGMENT s2)

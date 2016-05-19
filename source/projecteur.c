@@ -118,7 +118,7 @@ int projecteur_dectection_collision(SEGMENT s)
 		v2.y = ((tab_pr+i)->position).y+longueur*cos(angle);				
 		s_pr.deb = v1;
 		s_pr.fin = v2;
-		if(detection_intersection(s, s_pr) == 0)
+		if(detection_intersection(s, s_pr) == 1)
 			return 1;
 	}
 
