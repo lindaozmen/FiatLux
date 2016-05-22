@@ -300,3 +300,7 @@ int absorbeur_get_x(int id, int nb){
 int absorbeur_get_y(int id, int nb){
 	return ((tab_a+id)->elements+nb)->y;
 }
+
+VECTEUR absorbeur_get_vecteur(int id, int nb){
+	return *((tab_a+id)->elements+nb);
+}

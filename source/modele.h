@@ -22,5 +22,6 @@ void modele_destruction_simulation();
 void modele_destruction_photon_dehors(double xmin, double xmax,double ymin, double ymax);
 void modele_save_elements(char* nom_fichier);
 void modele_check_radio(int mode, int choix);
+int modele_verifier_collision();
 
 #endif
