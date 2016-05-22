@@ -59,7 +59,7 @@ int reflecteur_load(char * tab)
 			error_lecture_elements(ERR_REFLECTEUR, ERR_PAS_ASSEZ);
 			return 1;
 		}
-		if(calculate_distance(r.deb, r.fin) < EPSIL_CREATION)
+		if(utilitaire_calculate_distance(r.deb, r.fin) < EPSIL_CREATION)
 		{
 			error_lecture_point_trop_proche(ERR_REFLECTEUR, nb_element_r);
 			return 1;
@@ -108,7 +108,7 @@ SEGMENT reflecteur_dectection_collision(SEGMENT s)
 	for(i = 0; i < nb_element_r; i++)
 	{
 		SEGMENT s_r = {(tab_r + i)->deb, (tab_r + i)->fin};
-		if(detection_parallelisme(s, s_r) == 1)
+		if(utilitaire_detection_parallelisme(s, s_r) == 1)
 			return s_r;
 	}
 	SEGMENT s_null;
@@ -123,7 +123,7 @@ int reflecteur_plus_proche_selection(VECTEUR vect_coordonne)
 {
 	VECTEUR point = vect_coordonne;
 	VECTEUR vect = {(tab_r->deb).x, (tab_r->deb).y};
-	double min_distance = calculate_distance(point, vect);
+	double min_distance = utilitaire_calculate_distance(point, vect);
 	double min_temporaire = 0;
 	int min_i = 0;
 	int i;
@@ -131,7 +131,7 @@ int reflecteur_plus_proche_selection(VECTEUR vect_coordonne)
 	{	
 		vect.x = ((tab_r+i)->deb).x;
 		vect.y = ((tab_r+i)->deb).y;			
-		min_temporaire = calculate_distance(point, (tab_r+i)->deb);
+		min_temporaire = utilitaire_calculate_distance(point, (tab_r+i)->deb);
 		if(min_temporaire < min_distance)
 		{
 			min_distance = min_temporaire;
@@ -143,7 +143,7 @@ int reflecteur_plus_proche_selection(VECTEUR vect_coordonne)
 	{		
 		vect.x = ((tab_r+i)->fin).x;
 		vect.y = ((tab_r+i)->fin).y;		
-		min_temporaire = calculate_distance(point, (tab_r+i)->fin);
+		min_temporaire = utilitaire_calculate_distance(point, (tab_r+i)->fin);
 		if(min_temporaire < min_distance)
 		{
 			min_distance = min_temporaire;
@@ -233,16 +233,3 @@ void reflecteur_draw_selection(int id)
 						 (tab_r+id)->fin.x,(tab_r+id)->fin.y);
 }
 
-	
-int reflecteur_get_deb_x(int id){
-	return (tab_r+id)->deb.x;
-}
-int reflecteur_get_deb_y(int id){
-	return (tab_r+id)->deb.y;
-}
-int reflecteur_get_fin_x(int id){
-	return (tab_r+id)->fin.x;
-}
-int reflecteur_get_fin_y(int id){
-	return (tab_r+id)->fin.y;
-}

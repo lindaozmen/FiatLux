@@ -22,11 +22,5 @@ SEGMENT reflecteur_get_segment(int id);
 void reflecteur_draw_obj(int id_r);
 void reflecteur_drawing();
 void reflecteur_draw_selection(int id);
-int reflecteur_get_deb_x(int id);
-int reflecteur_get_deb_y(int id);
-int reflecteur_get_fin_x(int id);
-int reflecteur_get_fin_y(int id);
-
-
 #endif
 

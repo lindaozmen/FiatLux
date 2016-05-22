@@ -100,39 +100,14 @@ int projecteur_get_nombre()
 	return nb_element_pr;
 }
 
-
-int projecteur_dectection_collision(SEGMENT s)
-{
-	double longueur, angle;
-	VECTEUR v1, v2;
-	SEGMENT s_pr;
-	
-	int i;
-	for(i = 0; i < nb_element_pr; i++)
-	{
-		longueur = NBPH*EPSIL_PROJ;
-		angle = (tab_pr+i)->alpha;
-
-		v1 = (tab_pr + i)->position;
-		v2.x = ((tab_pr+i)->position).x-longueur*sin(angle);
-		v2.y = ((tab_pr+i)->position).y+longueur*cos(angle);				
-		s_pr.deb = v1;
-		s_pr.fin = v2;
-		if(detection_parallelisme(s, s_pr) == 1)
-			return 1;
-	}
-
-	return 0;
-}
-
-int projecteur_plus_proche_selection(VECTEUR vect_coordonne)
+int projecteur_plus_proche_selection(VECTEUR vect_coordonne)	//pour choisir élément à séléctionner
 {
 	double longueur = NBPH*EPSIL_PROJ;
 	double angle = (tab_pr)->alpha;
 	
 	VECTEUR point = vect_coordonne;
 	VECTEUR vect = {((tab_pr)->position).x, ((tab_pr)->position).y};
-	double min_distance = calculate_distance(point, vect);
+	double min_distance = utilitaire_calculate_distance(point, vect);
 	double min_temporaire = 0;
 	int min_i = 0;
 	int i;
@@ -143,7 +118,7 @@ int projecteur_plus_proche_selection(VECTEUR vect_coordonne)
 		vect.x = ((tab_pr+i)->position).x-longueur*sin(angle)/2.0;
 		vect.y = ((tab_pr+i)->position).y+longueur*cos(angle)/2.0;
 					
-		min_temporaire = calculate_distance(point, vect);
+		min_temporaire = utilitaire_calculate_distance(point, vect);
 		if(min_temporaire < min_distance)
 		{
 			min_distance = min_temporaire;
@@ -158,7 +133,7 @@ int projecteur_plus_proche_selection(VECTEUR vect_coordonne)
 		vect.x = ((tab_pr+i)->position).x;
 		vect.y = ((tab_pr+i)->position).y;
 					
-		min_temporaire = calculate_distance(point, vect);
+		min_temporaire = utilitaire_calculate_distance(point, vect);
 		if(min_temporaire < min_distance)
 		{
 			min_distance = min_temporaire;
@@ -182,7 +157,7 @@ void projecteur_print_file(FILE* file)
 }
 
 
-int projecteur_add_pr(PROJECTEUR pr)
+int projecteur_add_pr(PROJECTEUR pr)	//ajouter une projecteur pour la création
 {
 	if(tab_pr == NULL)
 	{
@@ -204,7 +179,7 @@ void projecteur_creation(VECTEUR deb, VECTEUR fin)
 {
 	PROJECTEUR pr;
 	pr.position = deb;
-	VECTEUR v = vecteur_difference(deb, fin);
+	VECTEUR v = utilitaire_vecteur_difference(deb, fin);
 	pr.alpha = atan2(v.y, v.x);
 	
 	projecteur_add_pr(pr);
@@ -281,21 +256,3 @@ void projecteur_draw_selection(int id)
 
 }
 
-int projecteur_get_deb_x(int id){
-	return (tab_pr+id)->position.x;
-}
-int projecteur_get_deb_y(int id){
-	return (tab_pr+id)->position.y;
-}
-int projecteur_get_fin_x(int id){
-	
-	double longueur = NBPH*EPSIL_PROJ;
-	double angle = (tab_pr+id)->alpha;
-	return ((tab_pr+id)->position).x-longueur*sin(angle);
-}
-int projecteur_get_fin_y(int id){
-	
-	double longueur = NBPH*EPSIL_PROJ;
-	double angle = (tab_pr+id)->alpha;
-	return ((tab_pr+id)->position).y+longueur*cos(angle);
-}

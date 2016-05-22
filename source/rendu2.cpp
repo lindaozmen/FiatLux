@@ -6,7 +6,6 @@
 extern "C"
 {
 	#include "modele.h"
-	#include "graphic.h"
 	#include <math.h>
 	#include "utilitaire.h"
 }
@@ -103,7 +102,11 @@ void mouse_cb(int button, int state, int x, int y)
 			else if (radio1->get_int_val() == 1)
 			{
 				VECTEUR v = glut_to_opengl_coordonnees(x, y);
-				modele_creation(v);
+				if (modele_creation(v) == 1)
+				{
+					radio1-> set_int_val(0);
+				}
+				
 			}
 			
 			
@@ -114,7 +117,7 @@ void mouse_cb(int button, int state, int x, int y)
    	{
 		if(button == GLUT_LEFT_BUTTON)
 		{
-			if(calculate_distance(dessin_start, dessin_end) > EPSIL_CREATION)
+			if(utilitaire_calculate_distance(dessin_start, dessin_end) > EPSIL_CREATION)
 			{
 				/*
 				xmin = dessin_start.x > dessin_end.x ? dessin_end.x : dessin_start.x;
@@ -153,19 +156,19 @@ void mouse_cb(int button, int state, int x, int y)
 
 VECTEUR glut_to_opengl_coordonnees(int x, int y)
 {
-	VECTEUR new_vecteur;
+	VECTEUR utilitaire_new_vecteur;
 	if(aspect_ratio <= 1.0)
 	{
-		new_vecteur.x = xmin + x*(fabs(xmax-xmin))/window_width;
-		new_vecteur.y = ymax/aspect_ratio - y*(fabs(ymax-ymin))/(window_height*aspect_ratio);
+		utilitaire_new_vecteur.x = xmin + x*(fabs(xmax-xmin))/window_width;
+		utilitaire_new_vecteur.y = ymax/aspect_ratio - y*(fabs(ymax-ymin))/(window_height*aspect_ratio);
 	}
 	else
 	{
-		new_vecteur.x = xmin*aspect_ratio + x*(fabs(xmax-xmin))/window_width*aspect_ratio;
-		new_vecteur.y = ymax - y*(fabs(ymax-ymin))/window_height;
+		utilitaire_new_vecteur.x = xmin*aspect_ratio + x*(fabs(xmax-xmin))/window_width*aspect_ratio;
+		utilitaire_new_vecteur.y = ymax - y*(fabs(ymax-ymin))/window_height;
 	}
 	
-	return new_vecteur;
+	return utilitaire_new_vecteur;
 }
 
 void motion_cb(int x, int y)
@@ -397,7 +400,7 @@ int main(int argc, char * argv[])
 				modele_destruction_simulation();
 			}
 		}
-		
+		modele_lecture_rendu2();
 		start_graphic(&argc, argv);
 		glutMainLoop();
 	}

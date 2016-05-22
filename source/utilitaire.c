@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 
-double calculate_distance(VECTEUR vect1, VECTEUR vect2)	
+double utilitaire_calculate_distance(VECTEUR vect1, VECTEUR vect2)	
 {
 	double difx = vect2.x - vect1.x;
 	double dify = vect2.y - vect1.y;
@@ -13,14 +13,14 @@ double calculate_distance(VECTEUR vect1, VECTEUR vect2)
 	return distance;
 }
 
-double calculate_norme_vecteur(VECTEUR v)
+double utilitaire_calculate_norme_vecteur(VECTEUR v)
 {
 	double norme = sqrt(v.x*v.x + v.y*v.y);
 	
 	return norme;
 }
 
-double calculate_norme_segment(SEGMENT s)
+double utilitaire_calculate_norme_segment(SEGMENT s)
 {
 	double norme_x = s.fin.x - s.deb.x;
 	double norme_y = s.fin.y - s.deb.y;
@@ -30,7 +30,7 @@ double calculate_norme_segment(SEGMENT s)
 	return norme;
 }
 
-VECTEUR vecteur_difference(VECTEUR vect1, VECTEUR vect2)	//on crée le vecteur entre les deux vecteur
+VECTEUR utilitaire_vecteur_difference(VECTEUR vect1, VECTEUR vect2)	//on crée le vecteur entre les deux vecteur
 {
 	VECTEUR new_vect;
 	
@@ -40,41 +40,41 @@ VECTEUR vecteur_difference(VECTEUR vect1, VECTEUR vect2)	//on crée le vecteur e
 	return new_vect;
 }
 
-VECTEUR calculer_difference_unitaire(SEGMENT s)
+VECTEUR utilitaire_calculer_difference_unitaire(SEGMENT s)
 {
-	double norme = calculate_norme_segment(s);
+	double norme = utilitaire_calculate_norme_segment(s);
 	
-	VECTEUR vect = vecteur_difference(s.deb, s.fin);
+	VECTEUR vect = utilitaire_vecteur_difference(s.deb, s.fin);
 	VECTEUR vect_unitaire = {vect.x/norme, vect.y/norme};
 	
 	return vect_unitaire;
 }
 
-VECTEUR calculer_vecteur_unitaire(VECTEUR v)
+VECTEUR utilitaire_calculer_vecteur_unitaire(VECTEUR v)
 {
-	double norme = calculate_norme_vecteur(v);
+	double norme = utilitaire_calculate_norme_vecteur(v);
 	
 	VECTEUR vect_unitaire = {v.x/norme, v.y/norme};
 	
 	return vect_unitaire;
 }
 	
-VECTEUR calculer_difference_normal(SEGMENT s)	
+VECTEUR utilitaire_calculer_difference_normal(SEGMENT s)	
 {
-	VECTEUR vect = calculer_difference_unitaire(s);
+	VECTEUR vect = utilitaire_calculer_difference_unitaire(s);
 	VECTEUR vect_normal = { -vect.y, vect.x };
 
 	return vect_normal;
 }
 
-VECTEUR calculer_sens_inverse(VECTEUR v)
+VECTEUR utilitaire_calculer_sens_inverse(VECTEUR v)
 {
 	VECTEUR v_inverse = {-v.x, -v.y};
 	
 	return v_inverse;
 }
 
-VECTEUR vecteur_multiplication_scalaire(VECTEUR vect, double scalaire)
+VECTEUR utilitaire_vecteur_multiplication_scalaire(VECTEUR vect, double scalaire)
 {
 	VECTEUR v_final;
 	v_final.x = vect.x*scalaire;
@@ -83,46 +83,46 @@ VECTEUR vecteur_multiplication_scalaire(VECTEUR vect, double scalaire)
 	return v_final;
 }
 
-int is_segment_null(SEGMENT s)
+int utilitaire_is_segment_null(SEGMENT s)
 {
 	if(	s.deb.x == 0 && s.deb.y == 0 && s.fin.x == 0 && s.fin.y == 0)
 		return 0;
 	return 1;
 }
 
-double produit_vectoriel(VECTEUR v1, VECTEUR v2)
+double utilitaire_produit_vectoriel(VECTEUR v1, VECTEUR v2)
 {	
 	double pv = v1.x*v2.y - v1.y*v2.x;
 	
 	return pv;
 }
 
-double produit_scalaire(VECTEUR v1, VECTEUR v2)
+double utilitaire_produit_scalaire(VECTEUR v1, VECTEUR v2)
 {
 	double ps = v1.x*v2.x + v1.y*v2.y;
 	
 	return ps;
 }
 
-int detection_parallelisme(SEGMENT s1, SEGMENT s2)
+int utilitaire_detection_parallelisme(SEGMENT s1, SEGMENT s2)
 {
-	VECTEUR u1 = calculer_difference_unitaire(s1);
-	VECTEUR u2 = calculer_difference_unitaire(s2);
+	VECTEUR u1 = utilitaire_calculer_difference_unitaire(s1);
+	VECTEUR u2 = utilitaire_calculer_difference_unitaire(s2);
 	
-	double pv = produit_vectoriel(u1, u2);
-	double norme1 = calculate_norme_segment(s1);
-	VECTEUR vd1d2 = vecteur_difference(s1.deb, s2.deb);
-	VECTEUR ud1d2 = calculer_vecteur_unitaire(vd1d2);
+	double pv = utilitaire_produit_vectoriel(u1, u2);
+	double norme1 = utilitaire_calculate_norme_segment(s1);
+	VECTEUR vd1d2 = utilitaire_vecteur_difference(s1.deb, s2.deb);
+	VECTEUR ud1d2 = utilitaire_calculer_vecteur_unitaire(vd1d2);
 	
 	if(fabs(pv) <= EPSIL_PARAL)	
 	{
-		double pvdeb = produit_vectoriel(u1, ud1d2);
+		double pvdeb = utilitaire_produit_vectoriel(u1, ud1d2);
 		
 		if(fabs(pvdeb)<= EPSIL_PARAL)
 		{
-			VECTEUR v2 = vecteur_difference(s2.deb,s2.fin);
-			double psu1v2 = produit_scalaire(u1, v2);
-			double psdeb = produit_scalaire(u1, vd1d2);
+			VECTEUR v2 = utilitaire_vecteur_difference(s2.deb,s2.fin);
+			double psu1v2 = utilitaire_produit_scalaire(u1, v2);
+			double psdeb = utilitaire_produit_scalaire(u1, vd1d2);
 			
 			if(fabs(psu1v2) < EPSIL_PARAL)	//direction opposée
 			{
@@ -151,23 +151,23 @@ int detection_parallelisme(SEGMENT s1, SEGMENT s2)
 	}
 	else
 	{
-		return detection_intersection(s1,s2);
+		return utilitaire_detection_intersection(s1,s2);
 	}
 }
 
-int detection_intersection(SEGMENT s1, SEGMENT s2)
+int utilitaire_detection_intersection(SEGMENT s1, SEGMENT s2)
 {
-	VECTEUR vd1f2 = vecteur_difference(s1.deb,s2.fin);
-	VECTEUR vd2f1 = vecteur_difference(s2.deb, s1.fin);
-	VECTEUR vd1d2 = vecteur_difference(s1.deb, s2.deb);
+	VECTEUR vd1f2 = utilitaire_vecteur_difference(s1.deb,s2.fin);
+	VECTEUR vd2f1 = utilitaire_vecteur_difference(s2.deb, s1.fin);
+	VECTEUR vd1d2 = utilitaire_vecteur_difference(s1.deb, s2.deb);
 	
-	VECTEUR n1 = calculer_difference_normal(s1);
-	VECTEUR n2 = calculer_difference_normal(s2);
+	VECTEUR n1 = utilitaire_calculer_difference_normal(s1);
+	VECTEUR n2 = utilitaire_calculer_difference_normal(s2);
 	
-	double ps1d1d2 = produit_scalaire(n1, vd1d2);
-	double ps1d1f2 = produit_scalaire(n1, vd1f2);
-	double ps2d2d1 = produit_scalaire(calculer_sens_inverse(n2), vd1d2);
-	double ps2d2f1 = produit_scalaire(n2, vd2f1);
+	double ps1d1d2 = utilitaire_produit_scalaire(n1, vd1d2);
+	double ps1d1f2 = utilitaire_produit_scalaire(n1, vd1f2);
+	double ps2d2d1 = utilitaire_produit_scalaire(utilitaire_calculer_sens_inverse(n2), vd1d2);
+	double ps2d2f1 = utilitaire_produit_scalaire(n2, vd2f1);
 	
 	if((fabs(ps1d1d2) < EPSIL_CONTACT || fabs(ps1d1f2) < EPSIL_CONTACT) || ps1d1d2*ps1d1f2 < 0)
 	{
@@ -179,10 +179,10 @@ int detection_intersection(SEGMENT s1, SEGMENT s2)
 	return 0;
 }
 
-VECTEUR detection_point_intersection(SEGMENT s1, SEGMENT s2)
+VECTEUR utilitaire_detection_point_intersection(SEGMENT s1, SEGMENT s2)
 {
-	VECTEUR v1 = vecteur_difference(s1.deb, s1.fin);
-	VECTEUR v2 = vecteur_difference(s2.deb, s2.fin);
+	VECTEUR v1 = utilitaire_vecteur_difference(s1.deb, s1.fin);
+	VECTEUR v2 = utilitaire_vecteur_difference(s2.deb, s2.fin);
 	VECTEUR pt_intersection;
 	
 	if (v1.x == 0)
@@ -210,7 +210,7 @@ VECTEUR detection_point_intersection(SEGMENT s1, SEGMENT s2)
 	
 	
 	
-VECTEUR new_vecteur(double x, double y){
+VECTEUR utilitaire_new_vecteur(double x, double y){
 	VECTEUR v = {x,y};
 	return v;
 }			

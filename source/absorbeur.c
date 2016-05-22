@@ -88,7 +88,7 @@ int absorbeur_load(char * tab)	//on lit ligne par ligne
 		}
 		for(i = 1; i < a.nbp; i++)
 		{
-			if(calculate_distance(*(a.elements+i), *(a.elements+i-1)) < EPSIL_CREATION)
+			if(utilitaire_calculate_distance(*(a.elements+i), *(a.elements+i-1)) < EPSIL_CREATION)
 			{
 				error_lecture_point_trop_proche(ERR_ABSORBEUR, nb_element_a);
 				return 1;
@@ -124,18 +124,18 @@ int absorbeur_dectection_collision(SEGMENT s)
 		for(j = 0; j < tab_a[i].nbp-1; j++)
 		{	
 			SEGMENT s_a = {*((tab_a+i)->elements+j), *((tab_a+i)->elements+j+1)};
-			if(detection_parallelisme(s, s_a) == 1)
+			if(utilitaire_detection_parallelisme(s, s_a) == 1)
 				return 1;
 		}
 	}
 	return 0;
 }
 
-int absorbeur_plus_proche_selection(VECTEUR vect_coordonne)
+int absorbeur_plus_proche_selection(VECTEUR vect_coordonne) //pour séléction
 {
 	VECTEUR point = vect_coordonne;
 	VECTEUR vect = {(tab_a->elements)->x, (tab_a->elements)->y};
-	double min_distance = calculate_distance(point, vect);
+	double min_distance = utilitaire_calculate_distance(point, vect);
 	double min_temporaire = 0;
 	int min_i = 0;
 	int i, j;
@@ -146,7 +146,7 @@ int absorbeur_plus_proche_selection(VECTEUR vect_coordonne)
 			vect.x = ((tab_a+i)->elements+j)->x;
 			vect.y = ((tab_a+i)->elements+j)->y;
 						
-			min_temporaire = calculate_distance(point, vect);
+			min_temporaire = utilitaire_calculate_distance(point, vect);
 			if(min_temporaire < min_distance)
 			{
 				min_distance = min_temporaire;
@@ -174,7 +174,7 @@ void absorbeur_print_file(FILE* file)
 	fprintf(file, "FIN_LISTE\n\n");
 }
 
-int absorbeur_add_a(ABSORBEUR a)
+int absorbeur_add_a(ABSORBEUR a)	//on ajoute un absorbeur au liste(pour création)
 {
 	if(tab_a == NULL)
 	{
@@ -204,7 +204,7 @@ void absorbeur_creation(VECTEUR* v, int nb_point)
 	absorbeur_add_a(abs);
 }
 
-void absorbeur_ramplacer_dernier(VECTEUR* v, int nb_point)
+void absorbeur_ramplacer_dernier(VECTEUR* v, int nb_point)	//pour la création des absorbeurs ayant plus que 2 points
 {
 	(tab_a+nb_element_a-1)->elements = realloc((tab_a+nb_element_a-1)->elements, sizeof(VECTEUR)*nb_point);
 	*((tab_a+nb_element_a-1)->elements +nb_point-1) = *(v+nb_point-1);
@@ -239,20 +239,6 @@ int absorbeur_get_nombre()
 int absorbeur_nombre_vecteur(int id)
 {
 	return (tab_a+id)->nbp;
-}
-
-SEGMENT* absorbeur_get_segment(int id)
-{
-	SEGMENT* a = malloc(((tab_a+id)->nbp-1)*sizeof(SEGMENT));
-	int i;
-	for(i = 0; i < (tab_a+id)->nbp-1; i++)
-	{
-		VECTEUR v1 = *((*(tab_a+id)).elements+i);
-		VECTEUR v2 = *((*(tab_a+id)).elements+i+1);
-		SEGMENT s = {v1, v2};
-		*(a+i) = s;
-	}
-	return a;
 }
 		
 void absorbeur_draw_obj(int id, int id_pt)
@@ -292,13 +278,6 @@ void absorbeur_draw_selection(int id)
 		graphic_draw_segment(((tab_a+id)->elements+i)->x, ((tab_a+id)->elements+i)->y,
 							((tab_a+id)->elements+i+1)->x, ((tab_a+id)->elements+i+1)->y);
 	}
-}
-
-int absorbeur_get_x(int id, int nb){
-	return ((tab_a+id)->elements+nb)->x;
-}
-int absorbeur_get_y(int id, int nb){
-	return ((tab_a+id)->elements+nb)->y;
 }
 
 VECTEUR absorbeur_get_vecteur(int id, int nb){

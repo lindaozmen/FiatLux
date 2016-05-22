@@ -91,7 +91,7 @@ int photon_get_nb()
 }
 
 
-void photon_update()
+void photon_update()	//fonction qui fait bouger, reflecter, absorber et qui crée les nouveaux photons
 {
 	PHOTON_LISTE* up_tete = tete;
 	while(up_tete)
@@ -102,7 +102,7 @@ void photon_update()
 		(up_tete->ph).position.y += VPHOT*DELTA_T*sin((up_tete->ph).alpha);
 		s.fin = (up_tete->ph).position;
 		PHOTON_LISTE* suivant = up_tete->suivant;
-		if(absorbeur_dectection_collision(s))
+		if(absorbeur_dectection_collision(s))	//verification de collision d'un photon avec absorbeur
 		{
 			photon_retirer(up_tete->id);
 			up_tete = NULL;
@@ -112,7 +112,7 @@ void photon_update()
 			SEGMENT s_reflecteur;
 			s_reflecteur = reflecteur_dectection_collision(s);
 		
-			if(is_segment_null(s_reflecteur))
+			if(utilitaire_is_segment_null(s_reflecteur))
 			{
 				
 				(up_tete->ph).position.x -= VPHOT*DELTA_T*cos((up_tete->ph).alpha);
@@ -125,10 +125,12 @@ void photon_update()
 				
 				photon_trajectoire_reflechie(&(up_tete->ph), s_reflecteur);
 				
-				double remDistance = (VPHOT*DELTA_T-distance) < EPSIL_CONTACT*1.8 ? EPSIL_CONTACT*1.8 : (VPHOT*DELTA_T-distance);
+				
+				double remDistance = (VPHOT*DELTA_T-distance) < EPSIL_CONTACT*2 ? EPSIL_CONTACT*2 : (VPHOT*DELTA_T-distance);
 				
 				(up_tete->ph).position.x += (remDistance*cos((up_tete->ph).alpha));
 				(up_tete->ph).position.y += (remDistance*sin((up_tete->ph).alpha));
+				
 			}
 		}
 		up_tete = suivant;	
@@ -139,16 +141,17 @@ void photon_update()
 void photon_trajectoire_reflechie(PHOTON* ph, SEGMENT s_reflecteur)
 {
 	VECTEUR t = {cos(ph->alpha), sin(ph->alpha)};	//car sa longueur = 1
-	VECTEUR n = calculer_difference_unitaire(s_reflecteur);
-	if(produit_scalaire(t, n) > 0)
-		n = calculer_sens_inverse(n);
-	VECTEUR intermediaire = vecteur_multiplication_scalaire(n, 2*produit_scalaire(t, n));
-	VECTEUR w = vecteur_difference(t, intermediaire);
+	VECTEUR n = utilitaire_calculer_difference_unitaire(s_reflecteur);
+	if(utilitaire_produit_scalaire(t, n) > 0)
+		n = utilitaire_calculer_sens_inverse(n);
+	VECTEUR intermediaire = utilitaire_vecteur_multiplication_scalaire(n, 2*utilitaire_produit_scalaire(t, n));
+	VECTEUR w = utilitaire_vecteur_difference(t, intermediaire);
 	double angle = atan2(w.y,w.x);
 	ph->alpha = angle;
 }
 
-double photon_distance_intersection(SEGMENT s, VECTEUR pos, double angle)		
+double photon_distance_intersection(SEGMENT s, VECTEUR pos, double angle)		/*distance que photon doit prendre jusqu'à
+																					reflecteur(leur intersection)*/
 {
 	//VECTEUR intersect;
 	//on utilise éq cartésienne droite:ax+by+c=0
@@ -165,7 +168,7 @@ double photon_distance_intersection(SEGMENT s, VECTEUR pos, double angle)
 	return d;
 }
 
-int photon_add_ph(PHOTON ph)
+int photon_add_ph(PHOTON ph)	//ajouter un photon au liste
 {
 	PHOTON_LISTE* liste_ph;
 	if(!(liste_ph = malloc(sizeof(PHOTON_LISTE))))
@@ -221,7 +224,7 @@ int photon_retirer(int id)
 	return 1;
 }
 
-void photon_destruction_dehors(double xmin, double xmax,double ymin, double ymax)
+void photon_destruction_dehors(double xmin, double xmax,double ymin, double ymax)	// pour la touche 'k'
 {
 	PHOTON_LISTE* element = tete;
 	while (element)

@@ -114,13 +114,15 @@ int modele_verifier_collision(){
 	
 	int i, j, w, v, t;
 	
-	for(i = 0; i < absorbeur_get_nombre(); i++){
-		
-		for(j = 0; j < absorbeur_nombre_vecteur(i)-1; j++){
+	for(i = 0; i < absorbeur_get_nombre(); i++)
+	{
+		for(j = 0; j < absorbeur_nombre_vecteur(i)-1; j++)
+		{
 			SEGMENT s_a = {absorbeur_get_vecteur(i,j+1), absorbeur_get_vecteur(i,j)};
-			for(w = 0; w < reflecteur_get_nombre(); w++){
+			for(w = 0; w < reflecteur_get_nombre(); w++)
+			{
 				SEGMENT s_r = reflecteur_get_segment(w);
-				if(detection_parallelisme(s_a,s_r) == 1)
+				if(utilitaire_detection_parallelisme(s_a,s_r) == 1)
 				{
 					error_lecture_intersection(ERR_ABSORBEUR, i, ERR_REFLECTEUR,w);
 					return 1;
@@ -128,12 +130,12 @@ int modele_verifier_collision(){
 				for(v = 0; v < projecteur_get_nombre(); v++){
 					SEGMENT s_p = projecteur_get_segment(v);
 					
-					if(detection_parallelisme(s_p,s_r) == 1)
+					if(utilitaire_detection_parallelisme(s_p,s_r) == 1)
 					{
 						error_lecture_intersection(ERR_PROJECTEUR, v, ERR_REFLECTEUR,w);
 						return 1;
 					}
-					if(detection_parallelisme(s_a,s_p) == 1)
+					if(utilitaire_detection_parallelisme(s_a,s_p) == 1)
 					{
 						error_lecture_intersection(ERR_ABSORBEUR, i, ERR_PROJECTEUR,v);
 						return 1;
@@ -147,9 +149,9 @@ int modele_verifier_collision(){
 				SEGMENT s_r = reflecteur_get_segment(w);
 				for(t = w+1; t < reflecteur_get_nombre(); t++){
 					SEGMENT s_r2 = reflecteur_get_segment(t);
-					if(detection_parallelisme(s_r,s_r2) == 1)
+					if(utilitaire_detection_parallelisme(s_r,s_r2) == 1)
 					{
-						error_lecture_intersection(ERR_REFLECTEUR,w, ERR_REFLECTEUR, t);
+						error_lecture_intersection(ERR_REFLECTEUR,t, ERR_REFLECTEUR, w);
 						return 1;
 					}
 				}
@@ -204,7 +206,7 @@ void modele_effacer_element()
 	}
 }
 
-void modele_creation(VECTEUR v)
+int modele_creation(VECTEUR v)
 {
 	if (nb_element_creation < MAX_PT)
 	{
@@ -220,6 +222,7 @@ void modele_creation(VECTEUR v)
 				if(modele_verifier_collision() == 1)
 				{
 						reflecteur_retirer(reflecteur_get_nombre()-1);
+						return 1;
 				}
 			}
 			else if (lastChoix == 2)
@@ -236,6 +239,7 @@ void modele_creation(VECTEUR v)
 				{
 					absorbeur_retirer(absorbeur_get_nombre()-1);
 					nb_element_creation = 0;
+					return 1;
 				} 
 					
 			}
@@ -245,7 +249,8 @@ void modele_creation(VECTEUR v)
 				nb_element_creation = 0;
 				if(modele_verifier_collision() == 1)
 				{
-						projecteur_retirer(projecteur_get_nombre()-1);
+					projecteur_retirer(projecteur_get_nombre()-1);
+					return 1;	
 				}
 			}
 		
@@ -257,7 +262,7 @@ void modele_creation(VECTEUR v)
 
 	}
 	
-	
+	return 0;
 }
 	
 	

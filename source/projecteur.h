@@ -14,7 +14,6 @@ int projecteur_load(char * tab);
 void projecteur_free();
 void projecteur_retirer(int id);
 int projecteur_get_nombre();
-int projecteur_dectection_collision(SEGMENT s);
 int projecteur_plus_proche_selection(VECTEUR vect_coordonne);
 void projecteur_print_file(FILE* file);
 int projecteur_add_pr(PROJECTEUR pr);
@@ -24,9 +23,4 @@ SEGMENT projecteur_get_segment(int id);
 void projecteur_draw_obj(int id);
 void projecteur_drawing();
 void projecteur_draw_selection(int id);
-int projecteur_get_deb_x(int id);
-int projecteur_get_deb_y(int id);
-int projecteur_get_fin_x(int id);
-int projecteur_get_fin_y(int id);
-
 #endif
