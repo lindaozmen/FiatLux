@@ -211,6 +211,104 @@ void modele_lecture_rendu2()
 	}
 }
 
+int modele_verifier_collision(){
+	int i,j;
+	//Reflecteur absorbeur
+	int w;
+	for(i = reflecteur_get_nombre()-1; i >=0; i--)
+	{
+		SEGMENT s1;
+		s1.deb.x = reflecteur_get_deb_x(i);
+		s1.deb.y = reflecteur_get_deb_y(i);
+		s1.fin.x = reflecteur_get_fin_x(i);
+		s1.fin.y = reflecteur_get_fin_y(i);
+		for(j = 0; j < absorbeur_get_nombre(); j++)
+		{
+			for(w = 0; w < absorbeur_nombre_vecteur(j)-1; w++)
+			{
+				SEGMENT s2;
+				s2.deb.x = absorbeur_get_x(j,w);
+				s2.deb.y = absorbeur_get_y(j,w);
+				s2.fin.x = absorbeur_get_x(j,w+1);
+				s2.fin.y = absorbeur_get_y(j,w+1);
+				if(detection_parallelisme(s1,s2) == 1)
+				{
+					return 1;
+				}
+			}
+		}
+	}
+	
+	//Projecteur absorbeur
+	for(i = projecteur_get_nombre()-1; i >=0; i--)
+	{
+		SEGMENT s1;
+		s1.deb.x = projecteur_get_deb_x(i);
+		s1.deb.y = projecteur_get_deb_y(i);
+		s1.fin.x = projecteur_get_fin_x(i);
+		s1.fin.y = projecteur_get_fin_y(i);
+		for(j = 0; j < absorbeur_get_nombre(); j++)
+		{
+			for(w = 0; w < absorbeur_nombre_vecteur(j)-1; w++)
+			{
+				SEGMENT s2;
+				s2.deb.x = absorbeur_get_x(j,w);
+				s2.deb.y = absorbeur_get_y(j,w);
+				s2.fin.x = absorbeur_get_x(j,w+1);
+				s2.fin.y = absorbeur_get_y(j,w+1);
+				if(detection_parallelisme(s1,s2) == 1)
+				{
+					return 1;
+				}
+			 }
+		}
+	}
+
+	//Reflecteur avec reflecteur
+	for(i = reflecteur_get_nombre()-1; i >=0; i--)
+	{
+		SEGMENT s1;
+		s1.deb.x = reflecteur_get_deb_x(i);
+		s1.deb.y = reflecteur_get_deb_y(i);
+		s1.fin.x = reflecteur_get_fin_x(i);
+		s1.fin.y = reflecteur_get_fin_y(i);
+		for(j = 0; j < reflecteur_get_nombre(); j++)
+		{
+			SEGMENT s2;
+			s2.deb.x = reflecteur_get_deb_x(j);
+			s2.deb.y = reflecteur_get_deb_y(j);
+			s2.fin.x = reflecteur_get_fin_x(j);
+			s2.fin.y = reflecteur_get_fin_y(j);
+			if(detection_parallelisme(s1,s2) == 1)
+			{
+				return 1;
+			}
+		}
+	}
+		
+	//Projecteur reflecteur
+	for(i = projecteur_get_nombre()-1; i >=0; i--)
+	{
+		SEGMENT s1;
+		s1.deb.x = projecteur_get_deb_x(i);
+		s1.deb.y = projecteur_get_deb_y(i);
+		s1.fin.x = projecteur_get_fin_x(i);
+		s1.fin.y = projecteur_get_fin_y(i);
+		for(j = 0; j < reflecteur_get_nombre(); j++)
+		{
+			SEGMENT s2;
+			s2.deb.x = reflecteur_get_deb_x(j);
+			s2.deb.y = reflecteur_get_deb_y(j);
+			s2.fin.x = reflecteur_get_fin_x(j);
+			s2.fin.y = reflecteur_get_fin_y(j);
+			if(detection_parallelisme(s1,s2) == 1)
+			{
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
 void modele_check_radio(int mode, int choix){
 	if(lastMode != mode || lastChoix != choix){
 		lastMode = mode;
@@ -261,7 +359,6 @@ void modele_effacer_element()
 
 void modele_creation(VECTEUR v)
 {
-	printf("%f %f\n", v.x, v.y);
 	if (nb_element_creation < MAX_PT)
 	{
 		v_tab[nb_element_creation] = v;
@@ -284,6 +381,12 @@ void modele_creation(VECTEUR v)
 				{
 					absorbeur_creation(v_tab, nb_element_creation);
 				}
+			/*	if (modele_verifier_collision() == 1)
+				{
+					absorbeur_retirer(absorbeur_get_nombre()-1);
+					nb_element_creation = 0;
+				} */
+					
 			}
 			else
 			{

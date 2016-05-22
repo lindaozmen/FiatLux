@@ -18,6 +18,7 @@ void photon_update();
 int photon_retirer(int id);
 void photon_destruction_dehors(double xmin, double xmax,double ymin, double ymax);
 void photon_trajectoire_reflechie(PHOTON* ph, SEGMENT s_reflecteur);
+double photon_distance_intersection(SEGMENT s, VECTEUR pos, double angle);
 int photon_add_ph(PHOTON ph);
 void photon_add(VECTEUR position, double angle);
 void photon_print_file(FILE* file);

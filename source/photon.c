@@ -114,19 +114,16 @@ void photon_update()
 		
 			if(is_segment_null(s_reflecteur))
 			{
-					printf("S_REFLECTEUR: %f %f %f %f \n", s_reflecteur.deb.x, s_reflecteur.deb.y, s_reflecteur.fin.x, s_reflecteur.fin.y);
 				(up_tete->ph).position.x -= VPHOT*DELTA_T*cos((up_tete->ph).alpha);
 				(up_tete->ph).position.y -= VPHOT*DELTA_T*sin((up_tete->ph).alpha);
-				printf("ANGLE: %f\n", (up_tete->ph).alpha);
-				photon_trajectoire_reflechie(&(up_tete->ph), s_reflecteur);
 				
-				VECTEUR point_intersection = detection_point_intersection(s, s_reflecteur);
-				printf("COLLISION: %f %f\n", point_intersection.x, point_intersection.y);
-				//double distance = calculate_distance(s.fin, point_intersection);
-				(up_tete->ph).position = point_intersection;
-				(up_tete->ph).position.x += (VPHOT*DELTA_T*cos((up_tete->ph).alpha));
-				(up_tete->ph).position.y += (VPHOT*DELTA_T*sin((up_tete->ph).alpha));
-				printf("ANGLE: %f\n", (up_tete->ph).alpha);
+				VECTEUR point_intersection;
+				point_intersection = detection_point_intersection(s, s_reflecteur);
+				double distance = photon_distance_intersection(s_reflecteur, s.deb, (up_tete->ph).alpha);
+				(up_tete->ph).position.x += (distance*cos((up_tete->ph).alpha));
+				(up_tete->ph).position.y += (distance*sin((up_tete->ph).alpha));
+				
+				photon_trajectoire_reflechie(&(up_tete->ph), s_reflecteur);
 			}
 		}
 		up_tete = suivant;	
@@ -144,6 +141,23 @@ void photon_trajectoire_reflechie(PHOTON* ph, SEGMENT s_reflecteur)
 	VECTEUR w = vecteur_difference(t, intermediaire);
 	double angle = atan2(w.y,w.x);
 	ph->alpha = angle;
+}
+
+double photon_distance_intersection(SEGMENT s, VECTEUR pos, double angle)		
+{
+	//VECTEUR intersect;
+	//on utilise éq cartésienne droite:ax+by+c=0
+	double a = s.deb.y-s.fin.y;
+	double b = s.fin.x-s.deb.x;
+	double c = -a*s.deb.x-b*s.deb.y;
+	
+	double xp = pos.x;
+	double yp = pos.y;
+	
+	//on utilise éq de la trajectoire du photon
+	double d = (-c-b*yp-a*xp)/(a*cos(angle)+b*sin(angle));	//distance entre photon et pt intersection
+	
+	return d;
 }
 
 int photon_add_ph(PHOTON ph)
