@@ -219,9 +219,9 @@ void projecteur_creer_photon()
 	for(i = 0; i < nb_element_pr; i++)
 	{
 		position = (tab_pr+i)->position;
+		alpha = (tab_pr+i)->alpha;
 		position.x += VPHOT*DELTA_T*cos(alpha);
 		position.y += VPHOT*DELTA_T*sin(alpha);
-		alpha = (tab_pr+i)->alpha;
 		for(j = 0; j < NBPH; j++)
 		{
 			photon_add(position, alpha);
@@ -233,7 +233,7 @@ void projecteur_creer_photon()
 
 SEGMENT projecteur_get_segment(int id)
 {
-	double longueur = NBPH*EPSIL_PROJ;
+	double longueur = (NBPH-1)*EPSIL_PROJ;
 	double angle = (tab_pr+id)->alpha;
 
 
@@ -246,7 +246,7 @@ SEGMENT projecteur_get_segment(int id)
 
 void projecteur_draw_obj(int id)
 {
-	double longueur = NBPH*EPSIL_PROJ;
+	double longueur = (NBPH-1)*EPSIL_PROJ;
 	double angle = (tab_pr+id)->alpha;
 
 	graphic_set_line_width(3.);
@@ -269,7 +269,7 @@ void projecteur_drawing()
 
 void projecteur_draw_selection(int id)
 {
-	double longueur = NBPH*EPSIL_PROJ;
+	double longueur = (NBPH-1)*EPSIL_PROJ;
 	double angle = (tab_pr+id)->alpha;
 	
 	graphic_set_line_width(4.);

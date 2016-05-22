@@ -61,7 +61,7 @@ VECTEUR calculer_vecteur_unitaire(VECTEUR v)
 	
 VECTEUR calculer_difference_normal(SEGMENT s)	
 {
-	VECTEUR vect = vecteur_difference(s.deb, s.fin);
+	VECTEUR vect = calculer_difference_unitaire(s);
 	VECTEUR vect_normal = { -vect.y, vect.x };
 
 	return vect_normal;
@@ -124,7 +124,7 @@ int detection_parallelisme(SEGMENT s1, SEGMENT s2)
 			double psu1v2 = produit_scalaire(u1, v2);
 			double psdeb = produit_scalaire(u1, vd1d2);
 			
-			if(psu1v2 < EPSIL_PARAL)	//direction opposée
+			if(fabs(psu1v2) < EPSIL_PARAL)	//direction opposée
 			{
 				if(psdeb > 0)
 				{
@@ -150,14 +150,17 @@ int detection_parallelisme(SEGMENT s1, SEGMENT s2)
 			return 0;
 	}
 	else
+	{
 		return detection_intersection(s1,s2);
+	}
 }
 
 int detection_intersection(SEGMENT s1, SEGMENT s2)
 {
-	VECTEUR vd1f2 = {s2.fin.x - s1.deb.x, s2.fin.y - s1.deb.y};
-	VECTEUR vd2f1 = {s1.fin.x - s2.deb.x, s1.fin.y - s2.deb.y};
+	VECTEUR vd1f2 = vecteur_difference(s1.deb,s2.fin);
+	VECTEUR vd2f1 = vecteur_difference(s2.deb, s1.fin);
 	VECTEUR vd1d2 = vecteur_difference(s1.deb, s2.deb);
+	
 	VECTEUR n1 = calculer_difference_normal(s1);
 	VECTEUR n2 = calculer_difference_normal(s2);
 	

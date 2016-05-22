@@ -114,16 +114,21 @@ void photon_update()
 		
 			if(is_segment_null(s_reflecteur))
 			{
+				
 				(up_tete->ph).position.x -= VPHOT*DELTA_T*cos((up_tete->ph).alpha);
 				(up_tete->ph).position.y -= VPHOT*DELTA_T*sin((up_tete->ph).alpha);
 				
-				VECTEUR point_intersection;
-				point_intersection = detection_point_intersection(s, s_reflecteur);
+				
 				double distance = photon_distance_intersection(s_reflecteur, s.deb, (up_tete->ph).alpha);
 				(up_tete->ph).position.x += (distance*cos((up_tete->ph).alpha));
 				(up_tete->ph).position.y += (distance*sin((up_tete->ph).alpha));
 				
 				photon_trajectoire_reflechie(&(up_tete->ph), s_reflecteur);
+				
+				double remDistance = (VPHOT*DELTA_T-distance) < EPSIL_CONTACT*1.8 ? EPSIL_CONTACT*1.8 : (VPHOT*DELTA_T-distance);
+				
+				(up_tete->ph).position.x += (remDistance*cos((up_tete->ph).alpha));
+				(up_tete->ph).position.y += (remDistance*sin((up_tete->ph).alpha));
 			}
 		}
 		up_tete = suivant;	
@@ -155,7 +160,7 @@ double photon_distance_intersection(SEGMENT s, VECTEUR pos, double angle)
 	double yp = pos.y;
 	
 	//on utilise éq de la trajectoire du photon
-	double d = (-c-b*yp-a*xp)/(a*cos(angle)+b*sin(angle));	//distance entre photon et pt intersection
+	double d = fabs((-c-b*yp-a*xp)/(a*cos(angle)+b*sin(angle)));	//distance entre photon et pt intersection
 	
 	return d;
 }
